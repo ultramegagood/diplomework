@@ -80,9 +80,10 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
         interWorks: '',
         interConfWorks: '',
         authors: [],
-        id: '',
+        id: docId,
         nameBook: '',
       );
+
       await _firestore.collection("documents").doc(doc.id).set(doc.toJson());
 
       _fetchDocuments();
@@ -105,10 +106,6 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
     QuerySnapshot querySnapshotAdmin =
         await _firestore.collection('documents').get();
     QuerySnapshot snapshot = await _firestore
-        .collection('users')
-        .where('id', isEqualTo: _userId)
-        .get();
-    QuerySnapshot snapshotRole = await _firestore
         .collection('users')
         .where('id', isEqualTo: _userId)
         .get();
