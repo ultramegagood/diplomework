@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "654637321704",
+    "project_id": "dkudiplome",
+    "storage_bucket": "dkudiplome.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:654637321704:android:59090f7dcfd457c6cf685d",
+        "android_client_info": {
+          "package_name": "kz.kdu.diplome_aisha"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBy1oVi6pYjoewfeT-x4IpeLq-O2tGIk2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
