@@ -1,3 +1,4 @@
+import 'package:diplome_aisha/screens/document_upload.dart';
 import 'package:diplome_aisha/screens/home_screen.dart';
 import 'package:diplome_aisha/screens/login.dart';
 import 'package:diplome_aisha/screens/pdf_view.dart';
@@ -25,7 +26,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-
       themeMode: ThemeMode.light,
       theme: ThemeData(
           useMaterial3: true,
@@ -74,6 +74,10 @@ GoRouter routes = GoRouter(
       builder: (context, state) => PDFViewerScreen(
         pdfUrl: state.extra as Map<String, dynamic>,
       ),
+    ),
+    GoRoute(
+      path: "/document",
+      builder: (context, state) => DocumentUpload(),
     ),
   ],
 );

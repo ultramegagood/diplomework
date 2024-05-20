@@ -32,22 +32,21 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
-  /// Connect the generated [_$PersonToJson] function to the `toJson` method.
   Map<String, dynamic> toJson() => _$UserToJson(this);
 }
 
 @JsonSerializable()
 class Document {
-  final String? id;
-  final String? name;
-  final String? userId;
-  final String? downloadUrl;
-  final String? date;
-  final String? perechen;
-  final String? interWorks;
-  final String? interConfWorks;
-  final String? nameBook;
-  final List<String>? authors;
+  String? id;
+  String? name;
+  String? userId;
+  String? downloadUrl;
+  String? date;
+  String? perechen;
+  String? interWorks;
+  String? interConfWorks;
+  String? nameBook;
+  List<String>? authors;
 
   Document({
     required this.id,
@@ -65,5 +64,5 @@ class Document {
   factory Document.fromJson(Map<String, dynamic> json) =>
       _$DocumentFromJson(json);
 
-   Map<String, dynamic> toJson() => _$DocumentToJson(this);
+  Map<String, dynamic> toJson() => _$DocumentToJson(this);
 }
