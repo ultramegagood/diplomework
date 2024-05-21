@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:diplome_aisha/models/models.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,11 +23,21 @@ class _DocumentUploadState extends State<DocumentUpload> {
 
   File? _document;
   String? _documentName;
-  String? _username;
+  String? _dateYear;
   String? _filePath;
   String? _userId;
-  String? _userRole;
   Uint8List? fileBytes;
+  final _formKey = GlobalKey<FormState>();
+  final _controllerName = TextEditingController();
+  final _controllerUserId = TextEditingController();
+  final _controllerDownloadUrl = TextEditingController();
+  final _controllerDate = TextEditingController();
+  final _controllerPerechen = TextEditingController();
+  final _controllerInterWorks = TextEditingController();
+  final _controllerInterConfWorks = TextEditingController();
+  final _controllerNameBook = TextEditingController();
+  final _controllerAuthors = TextEditingController();
+  String? docId;
 
   Future _pickDocument() async {
     FilePickerResult? result = await FilePicker.platform
@@ -42,7 +53,10 @@ class _DocumentUploadState extends State<DocumentUpload> {
     }
   }
 
+  Document? doc;
+
   void _uploadDocument() async {
+    _userId = FirebaseAuth.instance.currentUser?.uid;
     try {
       await _pickDocument();
       String fileName = '${_documentName}';
@@ -69,13 +83,13 @@ class _DocumentUploadState extends State<DocumentUpload> {
         'userId': _userId,
         'downloadUrl': downloadUrl,
       });
-      String docId = docRef.id;
+      docId = docRef.id;
 
-      Document doc = Document(
+      doc = Document(
         name: _documentName!,
         userId: _userId!,
         downloadUrl: downloadUrl,
-        date: '',
+        date: "",
         perechen: '',
         interWorks: '',
         interConfWorks: '',
@@ -84,7 +98,7 @@ class _DocumentUploadState extends State<DocumentUpload> {
         nameBook: '',
       );
 
-      await _firestore.collection("documents").doc(doc.id).set(doc.toJson());
+      await _firestore.collection("documents").doc(docId).set(doc!.toJson());
 
       setState(() {
         loading = false;
@@ -113,6 +127,9 @@ class _DocumentUploadState extends State<DocumentUpload> {
               lastDate: DateTime(2100),
               selectedDate: initialDate,
               onChanged: (DateTime dateTime) {
+                _dateYear = dateTime.year.toString();
+                _controllerDate.text = dateTime.year.toString();
+
                 Navigator.pop(context, dateTime.year);
               },
             ),
@@ -137,90 +154,83 @@ class _DocumentUploadState extends State<DocumentUpload> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Загрузка документа:",
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: TextField(
-                  decoration: const InputDecoration(labelText: 'Название'),
-                  onChanged: (v) {
-                    document.name = v;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: GestureDetector(
-                  onTap: ()=>_selectYear(context),
-                  child: TextField(
-                    readOnly: true,
-                    enabled: false,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: _filePath != null
+            ? Form(
+                key: _formKey,
+                child: ListView(
+                  children: [
+                    TextFormField(
+                      controller: _controllerName,
+                      decoration: const InputDecoration(labelText: 'Name'),
+                      validator: (value) =>
+                          value!.isEmpty ? 'Enter document name' : null,
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      readOnly: true,
+                      onTap: () => _selectYear(context),
+                      controller: _controllerDate,
+                      decoration: const InputDecoration(labelText: 'Date'),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _controllerPerechen,
+                      decoration: const InputDecoration(labelText: 'Perechen'),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _controllerInterWorks,
+                      decoration:
+                          const InputDecoration(labelText: 'Inter Works'),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _controllerInterConfWorks,
+                      decoration:
+                          const InputDecoration(labelText: 'Inter Conf Works'),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _controllerNameBook,
+                      decoration: const InputDecoration(labelText: 'Name Book'),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          doc = Document(
+                            name: _controllerName.text!,
+                            userId: _userId!,
+                            downloadUrl: doc?.downloadUrl,
+                            date: _dateYear,
+                            perechen: _controllerPerechen.text,
+                            interWorks: _controllerInterWorks.text,
+                            interConfWorks: _controllerInterConfWorks.text,
+                            authors: [],
+                            id: docId,
+                            nameBook: _controllerNameBook.text,
+                          );
 
-                    decoration: const InputDecoration(labelText: 'Дата'),
-                    onChanged: (v) {
-                      document.date = v;
-                    },
-                  ),
+                          await _firestore
+                              .collection("documents")
+                              .doc(doc!.id)
+                              .set(doc!.toJson());
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: const Text('Save'),
+                    ),
+                  ],
+                ),
+              )
+            : Center(
+                child: ElevatedButton(
+                  onPressed: _uploadDocument,
+                  child: const Text("Загрузить Документ"),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: TextField(
-                  decoration: const InputDecoration(labelText: 'Перечень'),
-                  onChanged: (v) {
-                    document.perechen = v;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: TextField(
-                  decoration:
-                      const InputDecoration(labelText: 'Меж. народные работы'),
-                  onChanged: (v) {
-                    document.interWorks = v;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: TextField(
-                  decoration: const InputDecoration(
-                      labelText: 'Меж. народные конфересий '),
-                  onChanged: (v) {
-                    document.interConfWorks = v;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: TextField(
-                  decoration:
-                      const InputDecoration(labelText: 'Названия учебника'),
-                  onChanged: (v) {
-                    document.nameBook = v;
-                  },
-                ),
-              ),
-              ElevatedButton(
-                  onPressed: () {
-                    document;
-                  },
-                  child: const Text("Загрузить"))
-            ],
-          ),
-        ),
       ),
     );
   }

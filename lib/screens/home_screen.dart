@@ -44,9 +44,6 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
 
   bool loading = false;
 
-
-
-
   void _fetchDocuments() async {
     setState(() {
       loading = true;
@@ -82,20 +79,25 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
       loading = false;
     });
   }
-@override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+
+  @override
+  void didUpdateWidget(covariant UploadDocumentScreen oldWidget) {
     _fetchDocuments();
+    super.didUpdateWidget(oldWidget);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(_username ?? ""),
-        leading: IconButton(onPressed: () {
-          context.push("/profile");
-        }, icon: const Icon(Icons.account_circle),),
+        leading: IconButton(
+          onPressed: () {
+            context.push("/profile");
+          },
+          icon: const Icon(Icons.account_circle),
+        ),
         actions: [
           IconButton(
               onPressed: () {
@@ -106,7 +108,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: ()=>context.push("/document"),
+        onPressed: () => context.push("/document"),
         child: const Icon(Icons.add),
       ),
       body: Padding(
