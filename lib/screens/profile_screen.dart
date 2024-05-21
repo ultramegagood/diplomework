@@ -190,9 +190,9 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: (){
-                        FirebaseAuth.instance.signOut();
-                        context.replace("/auth");
+                      onPressed: ()async{
+                      await  FirebaseAuth.instance.signOut();
+                        context.pushReplacement("/auth");
                       },
                       child: const Text('Выйти из аккаунта'),
                     ),
