@@ -25,7 +25,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
 
   fetchData() async {
     setState(() {
-      loading =true;
+      loading = true;
     });
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('users')
@@ -41,7 +41,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     _controllerDegree.text = user!.degree!;
     _controllerDiplome.text = user!.diplome!;
     setState(() {
-      loading =false;
+      loading = false;
     });
   }
 
@@ -95,26 +95,34 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
 
   void _saveProfile() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final newData = model.User(
-          id: FirebaseAuth.instance.currentUser!.uid,
-          fullname: _controllerFullName.text,
-          email: _controllerEmail.text,
-          password: user?.password,
-          documents: user?.documents,
-          workExperience: _controllerWorkExperience.text,
-          degree: _controllerDegree.text,
-          role: user?.role,
-          diplome: _controllerDiplome.text);
+      try {
+        FirebaseAuth.instance.currentUser?.updateEmail(_controllerEmail.text);
 
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(newData.id)
-          .set(newData.toJson());
+        final newData = model.User(
+            id: FirebaseAuth.instance.currentUser!.uid,
+            fullname: _controllerFullName.text,
+            email: _controllerEmail.text,
+            password: user?.password,
+            documents: user?.documents,
+            workExperience: _controllerWorkExperience.text,
+            degree: _controllerDegree.text,
+            role: user?.role,
+            diplome: _controllerDiplome.text);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Профиль сохранен')),
-      );
-      Navigator.pop(context);
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(newData.id)
+            .set(newData.toJson());
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Профиль сохранен')),
+        );
+        Navigator.pop(context);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
     }
   }
 
@@ -124,59 +132,65 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
       appBar: AppBar(
         title: const Text('Редактирования'),
       ),
-      body:loading? const Center(child: CircularProgressIndicator(),): Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                controller: _controllerFullName,
-                decoration: const InputDecoration(labelText: 'ФИО'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter your full name' : null,
+      body: loading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: [
+                    TextFormField(
+                      controller: _controllerFullName,
+                      decoration: const InputDecoration(labelText: 'ФИО'),
+                      validator: (value) =>
+                          value!.isEmpty ? 'Enter your full name' : null,
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    TextFormField(
+                      controller: _controllerEmail,
+                      decoration: const InputDecoration(labelText: 'Почта'),
+                      validator: (value) =>
+                          value!.isEmpty ? 'Enter your email' : null,
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    TextFormField(
+                      controller: _controllerWorkExperience,
+                      decoration:
+                          const InputDecoration(labelText: 'Опыт работы'),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    TextFormField(
+                      controller: _controllerDegree,
+                      readOnly: true,
+                      onTap: showDegrees,
+                      decoration:
+                          const InputDecoration(labelText: 'Академ. Степень'),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    TextFormField(
+                      controller: _controllerDiplome,
+                      decoration: const InputDecoration(labelText: 'Диплом'),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: _saveProfile,
+                      child: const Text('Сохранить'),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextFormField(
-                controller: _controllerEmail,
-                decoration: const InputDecoration(labelText: 'Почта'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter your email' : null,
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextFormField(
-                controller: _controllerWorkExperience,
-                decoration: const InputDecoration(labelText: 'Опыт работы'),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextFormField(
-                controller: _controllerDegree,
-                readOnly: true,
-                onTap: showDegrees,
-                decoration: const InputDecoration(labelText: 'Академ. Степень'),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextFormField(
-                controller: _controllerDiplome,
-                decoration: const InputDecoration(labelText: 'Диплом'),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _saveProfile,
-                child: const Text('Сохранить'),
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }
