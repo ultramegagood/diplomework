@@ -22,6 +22,44 @@ class _AuthScreenState extends State<AuthScreen> {
   String? _degree;
   String? _diplome;
 
+  showDegrees() {
+    showModalBottomSheet(
+        context: context,
+        builder: (c) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ListView(
+              children: [
+                const SizedBox(
+                  height: 32,
+                ),
+                Text("Выберите степень образования:",style: Theme.of(context).textTheme.titleMedium,),
+                const SizedBox(
+                  height: 16,
+                ),
+                ...degrees.map((e) => ListTile(
+                  trailing: _degree == e
+                      ? const Icon(Icons.done)
+                      : null,
+                  title: Text(e),
+                  onTap: () {
+                    _degree = e;
+                    Navigator.pop(context);
+                  },
+                ))
+              ],
+            ),
+          );
+        });
+  }
+
+  List degrees = [
+    'кандидат наук',
+    'доктор наук',
+    'доктор философии (PhD)',
+    'доктор по профилю'
+  ];
+
   void _register() async {
     try {
       UserCredential userCredential =
@@ -108,6 +146,8 @@ class _AuthScreenState extends State<AuthScreen> {
                 height: 8,
               ),
               TextField(
+                readOnly: true,
+                onTap: showDegrees,
                 onChanged: (value) => _degree = value,
                 decoration: const InputDecoration(labelText: 'Академ. Степень'),
               ),

@@ -93,6 +93,9 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(_username ?? ""),
+        leading: IconButton(onPressed: () {
+          context.push("/profile");
+        }, icon: const Icon(Icons.account_circle),),
         actions: [
           IconButton(
               onPressed: () {

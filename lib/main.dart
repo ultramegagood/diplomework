@@ -2,6 +2,7 @@ import 'package:diplome_aisha/screens/document_upload.dart';
 import 'package:diplome_aisha/screens/home_screen.dart';
 import 'package:diplome_aisha/screens/login.dart';
 import 'package:diplome_aisha/screens/pdf_view.dart';
+import 'package:diplome_aisha/screens/profile_screen.dart';
 import 'package:diplome_aisha/screens/register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +78,11 @@ GoRouter routes = GoRouter(
     ),
     GoRoute(
       path: "/document",
-      builder: (context, state) => DocumentUpload(),
+      builder: (context, state) => const DocumentUpload(),
+    ),
+    GoRoute(
+      path: "/profile",
+      builder: (context, state) => const ProfileEditPage(),
     ),
   ],
 );
