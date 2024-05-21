@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 class PDFViewerScreen extends StatefulWidget {
   final Map<String, dynamic> pdfUrl;
 
-  PDFViewerScreen({required this.pdfUrl});
+  const PDFViewerScreen({super.key, required this.pdfUrl});
 
   @override
   _PDFViewerScreenState createState() => _PDFViewerScreenState();
@@ -30,7 +30,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
       loading = true;
     });
     final url = widget.pdfUrl['pdfUrl'];
-    log("url is ${url}");
+    log("url is $url");
     final filename = url.substring(url.lastIndexOf("/") + 1);
     final directory = await getApplicationCacheDirectory();
     final path = '${directory.path}/$filename';
@@ -55,7 +55,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('PDF Viewer'),
+        title: const Text('PDF Viewer'),
       ),
       body: loading == true
           ? const Center(
@@ -78,7 +78,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                     onPressed: () async {
                       await launch(widget.pdfUrl['pdfUrl']);
                     },
-                    child: Text('Open PDF in Browser'),
+                    child: const Text('Open PDF in Browser'),
                   ),
                 ),
     );

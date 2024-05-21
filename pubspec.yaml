@@ -53,8 +53,9 @@ dependencies:
   json_serializable:
   json_annotation:
   build_runner:
+  excel: ^4.0.3
 
-
+  http: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

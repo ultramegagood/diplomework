@@ -23,20 +23,18 @@ class _DocumentUploadState extends State<DocumentUpload> {
 
   File? _document;
   String? _documentName;
+  String? _documentId;
   String? _dateYear;
   String? _filePath;
   String? _userId;
   Uint8List? fileBytes;
   final _formKey = GlobalKey<FormState>();
   final _controllerName = TextEditingController();
-  final _controllerUserId = TextEditingController();
-  final _controllerDownloadUrl = TextEditingController();
   final _controllerDate = TextEditingController();
   final _controllerPerechen = TextEditingController();
   final _controllerInterWorks = TextEditingController();
   final _controllerInterConfWorks = TextEditingController();
   final _controllerNameBook = TextEditingController();
-  final _controllerAuthors = TextEditingController();
   String? docId;
 
   Future _pickDocument() async {
@@ -53,12 +51,11 @@ class _DocumentUploadState extends State<DocumentUpload> {
     }
   }
 
-  Document? doc;
+  late Document doc;
 
-  void _uploadDocument() async {
+  Future<void> _uploadDocument() async {
     _userId = FirebaseAuth.instance.currentUser?.uid;
     try {
-      await _pickDocument();
       String fileName = '${_documentName}';
       setState(() {
         loading = true;
@@ -78,27 +75,29 @@ class _DocumentUploadState extends State<DocumentUpload> {
       }
       String downloadUrl = await snapshot.ref.getDownloadURL();
 
-      DocumentReference docRef = await _firestore.collection('documents').add({
-        'name': document.name,
+      await _firestore.collection('documents').add({
+        'name': _controllerName.text!,
         'userId': _userId,
         'downloadUrl': downloadUrl,
+        'date': _dateYear,
+        'perechen': _controllerPerechen.text,
+        'interWorks': _controllerInterWorks.text,
+        'interConfWorks': _controllerInterConfWorks.text,
+        'nameBook': _controllerNameBook.text,
+      }).then((value) {
+        docId = value.id;
       });
-      docId = docRef.id;
-
-      doc = Document(
-        name: _documentName!,
-        userId: _userId!,
-        downloadUrl: downloadUrl,
-        date: "",
-        perechen: '',
-        interWorks: '',
-        interConfWorks: '',
-        authors: [],
-        id: docId,
-        nameBook: '',
-      );
-
-      await _firestore.collection("documents").doc(docId).set(doc!.toJson());
+      await _firestore.collection('documents').doc(docId).update({
+        "id": docId,
+        'name': _controllerName.text!,
+        'userId': _userId,
+        'downloadUrl': downloadUrl,
+        'date': _dateYear,
+        'perechen': _controllerPerechen.text,
+        'interWorks': _controllerInterWorks.text,
+        'interConfWorks': _controllerInterConfWorks.text,
+        'nameBook': _controllerNameBook.text,
+      });
 
       setState(() {
         loading = false;
@@ -174,7 +173,8 @@ class _DocumentUploadState extends State<DocumentUpload> {
                       readOnly: true,
                       onTap: () => _selectYear(context),
                       controller: _controllerDate,
-                      decoration: const InputDecoration(labelText: 'Дата (год)'),
+                      decoration:
+                          const InputDecoration(labelText: 'Дата (год)'),
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
@@ -184,41 +184,26 @@ class _DocumentUploadState extends State<DocumentUpload> {
                     const SizedBox(height: 8),
                     TextFormField(
                       controller: _controllerInterWorks,
-                      decoration:
-                          const InputDecoration(labelText: 'Меж. народные работы'),
+                      decoration: const InputDecoration(
+                          labelText: 'Меж. народные работы'),
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
                       controller: _controllerInterConfWorks,
-                      decoration:
-                          const InputDecoration(labelText: 'Меж. народные конференций'),
+                      decoration: const InputDecoration(
+                          labelText: 'Меж. народные конференций'),
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
                       controller: _controllerNameBook,
-                      decoration: const InputDecoration(labelText: 'Названия учебника'),
+                      decoration:
+                          const InputDecoration(labelText: 'Названия учебника'),
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          doc = Document(
-                            name: _controllerName.text!,
-                            userId: _userId!,
-                            downloadUrl: doc?.downloadUrl,
-                            date: _dateYear,
-                            perechen: _controllerPerechen.text,
-                            interWorks: _controllerInterWorks.text,
-                            interConfWorks: _controllerInterConfWorks.text,
-                            authors: [],
-                            id: docId,
-                            nameBook: _controllerNameBook.text,
-                          );
-
-                          await _firestore
-                              .collection("documents")
-                              .doc(doc!.id)
-                              .set(doc!.toJson());
+                         await _uploadDocument();
                           Navigator.pop(context);
                         }
                       },
@@ -229,7 +214,7 @@ class _DocumentUploadState extends State<DocumentUpload> {
               )
             : Center(
                 child: ElevatedButton(
-                  onPressed: _uploadDocument,
+                  onPressed: _pickDocument,
                   child: const Text("Загрузить Документ"),
                 ),
               ),

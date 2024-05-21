@@ -49,16 +49,16 @@ class Document {
   List<String>? authors;
 
   Document({
-    required this.id,
-    required this.name,
-    required this.userId,
-    required this.downloadUrl,
-    required this.date,
-    required this.perechen,
-    required this.interWorks,
-    required this.interConfWorks,
-    required this.nameBook,
-    required this.authors,
+    this.id,
+    this.name,
+    this.userId,
+    this.downloadUrl,
+    this.date,
+    this.perechen,
+    this.interWorks,
+    this.interConfWorks,
+    this.nameBook,
+    this.authors,
   });
 
   factory Document.fromJson(Map<String, dynamic> json) =>

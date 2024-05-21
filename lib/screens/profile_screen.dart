@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 import '../models/models.dart' as model;
 
@@ -108,6 +107,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
             degree: _controllerDegree.text,
             role: user?.role,
             diplome: _controllerDiplome.text);
+
 
         await FirebaseFirestore.instance
             .collection('users')

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:diplome_aisha/screens/document_upload.dart';
 import 'package:diplome_aisha/screens/home_screen.dart';
 import 'package:diplome_aisha/screens/login.dart';
@@ -56,15 +58,17 @@ GoRouter routes = GoRouter(
   routes: [
     GoRoute(
         path: "/auth",
-        builder: (context, state) => AuthScreen(),
+        builder: (context, state) => const AuthScreen(),
         redirect: (context, state) {
+          log("user is ${FirebaseAuth.instance.currentUser}");
           if (FirebaseAuth.instance.currentUser != null) {
             return "/";
           }
+          return null;
         }),
     GoRoute(
       path: "/",
-      builder: (context, state) => UploadDocumentScreen(),
+      builder: (context, state) => const UploadDocumentScreen(),
     ),
     GoRoute(
       path: "/login",

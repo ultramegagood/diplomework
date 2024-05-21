@@ -7,6 +7,8 @@ import 'package:go_router/go_router.dart';
 import '../main.dart';
 
 class AuthScreen extends StatefulWidget {
+  const AuthScreen({super.key});
+
   @override
   _AuthScreenState createState() => _AuthScreenState();
 }
@@ -43,8 +45,11 @@ class _AuthScreenState extends State<AuthScreen> {
                       : null,
                   title: Text(e),
                   onTap: () {
-                    _degree = e;
+                    setState(() {
+                      _degree = e;
+                    });
                     Navigator.pop(context);
+
                   },
                 ))
               ],
@@ -85,18 +90,6 @@ class _AuthScreenState extends State<AuthScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));
-    }
-  }
-
-  void _login() async {
-    try {
-      await _auth.signInWithEmailAndPassword(
-        email: _email!,
-        password: _password!,
-      );
-      routes.push("/");
-    } catch (e) {
-      print(e);
     }
   }
 
@@ -149,6 +142,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 readOnly: true,
                 onTap: showDegrees,
                 onChanged: (value) => _degree = value,
+                controller: TextEditingController(text: _degree),
                 decoration: const InputDecoration(labelText: 'Академ. Степень'),
               ),
               const SizedBox(
