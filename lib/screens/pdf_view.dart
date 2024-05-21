@@ -32,7 +32,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
     final url = widget.pdfUrl['pdfUrl'];
     log("url is $url");
     final filename = url.substring(url.lastIndexOf("/") + 1);
-    final directory = await getApplicationCacheDirectory();
+    final directory = await getApplicationDocumentsDirectory();
     final path = '${directory.path}/$filename';
 
     setState(() {

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../models/models.dart' as model;
 
@@ -186,6 +187,14 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                     ElevatedButton(
                       onPressed: _saveProfile,
                       child: const Text('Сохранить'),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: (){
+                        FirebaseAuth.instance.signOut();
+                        context.replace("/auth");
+                      },
+                      child: const Text('Выйти из аккаунта'),
                     ),
                   ],
                 ),
