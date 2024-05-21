@@ -153,7 +153,9 @@ class _DocumentUploadState extends State<DocumentUpload> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text('Загрузить документ'),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: _filePath != null
@@ -163,7 +165,7 @@ class _DocumentUploadState extends State<DocumentUpload> {
                   children: [
                     TextFormField(
                       controller: _controllerName,
-                      decoration: const InputDecoration(labelText: 'Name'),
+                      decoration: const InputDecoration(labelText: 'Название'),
                       validator: (value) =>
                           value!.isEmpty ? 'Enter document name' : null,
                     ),
@@ -172,29 +174,29 @@ class _DocumentUploadState extends State<DocumentUpload> {
                       readOnly: true,
                       onTap: () => _selectYear(context),
                       controller: _controllerDate,
-                      decoration: const InputDecoration(labelText: 'Date'),
+                      decoration: const InputDecoration(labelText: 'Дата (год)'),
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
                       controller: _controllerPerechen,
-                      decoration: const InputDecoration(labelText: 'Perechen'),
+                      decoration: const InputDecoration(labelText: 'Перечень'),
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
                       controller: _controllerInterWorks,
                       decoration:
-                          const InputDecoration(labelText: 'Inter Works'),
+                          const InputDecoration(labelText: 'Меж. народные работы'),
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
                       controller: _controllerInterConfWorks,
                       decoration:
-                          const InputDecoration(labelText: 'Inter Conf Works'),
+                          const InputDecoration(labelText: 'Меж. народные конференций'),
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
                       controller: _controllerNameBook,
-                      decoration: const InputDecoration(labelText: 'Name Book'),
+                      decoration: const InputDecoration(labelText: 'Названия учебника'),
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(

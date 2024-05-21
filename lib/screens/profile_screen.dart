@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../models/models.dart' as model;
 
@@ -19,9 +20,13 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   final _controllerDegree = TextEditingController();
   final _controllerDiplome = TextEditingController();
 
+  bool loading = false;
   model.User? user;
 
   fetchData() async {
+    setState(() {
+      loading =true;
+    });
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('users')
         .where('id', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
@@ -35,11 +40,15 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     _controllerWorkExperience.text = user!.workExperience!;
     _controllerDegree.text = user!.degree!;
     _controllerDiplome.text = user!.diplome!;
+    setState(() {
+      loading =false;
+    });
   }
 
   @override
   void initState() {
     super.initState();
+
     fetchData();
   }
 
@@ -54,7 +63,10 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                 const SizedBox(
                   height: 32,
                 ),
-                  Text("Выберите степень образования:",style: Theme.of(context).textTheme.titleMedium,),
+                Text(
+                  "Выберите степень образования:",
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
                 const SizedBox(
                   height: 16,
                 ),
@@ -100,8 +112,9 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
           .set(newData.toJson());
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile saved successfully')),
+        const SnackBar(content: Text('Профиль сохранен')),
       );
+      Navigator.pop(context);
     }
   }
 
@@ -111,7 +124,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
       appBar: AppBar(
         title: const Text('Редактирования'),
       ),
-      body: Padding(
+      body:loading? const Center(child: CircularProgressIndicator(),): Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -146,8 +159,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                 controller: _controllerDegree,
                 readOnly: true,
                 onTap: showDegrees,
-                decoration:
-                    const InputDecoration(labelText: 'Академ. Степень'),
+                decoration: const InputDecoration(labelText: 'Академ. Степень'),
               ),
               const SizedBox(
                 height: 8,
