@@ -26,29 +26,39 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
   }
 
   Future<void> _downloadPDFFile() async {
-    setState(() {
-      loading = true;
-    });
-    final url = widget.pdfUrl['pdfUrl'];
-    log("url is $url");
-    final filename = url.substring(url.lastIndexOf("/") + 1);
-    final directory = await getApplicationDocumentsDirectory();
-    final path = '${directory.path}/$filename';
+    try {
+      setState(() {
+        loading = true;
+      });
 
-    setState(() {
-      _localFilePath = path;
-    });
+      final url = widget.pdfUrl['pdfUrl'];
+      log("url is $url");
+      final filename = url.substring(url.lastIndexOf("/") + 1);
+      final directory = await getApplicationDocumentsDirectory();
+      final path = '${directory.path}/$filename';
 
-    if (await File(path).exists()) {
-      return;
+      if (await File(path).exists()) {
+        setState(() {
+          _localFilePath = path;
+          loading = false;
+        });
+        return;
+      }
+
+      final response = await http.get(Uri.parse(url));
+      final pdfFile = File(path);
+      await pdfFile.writeAsBytes(response.bodyBytes);
+
+      setState(() {
+        _localFilePath = path;
+        loading = false;
+      });
+    } catch (e) {
+      log(e.toString());
+      setState(() {
+        loading = false;
+      });
     }
-
-    final response = await http.get(Uri.parse(url));
-    final pdfFile = File(path);
-    await pdfFile.writeAsBytes(response.bodyBytes);
-    setState(() {
-      loading = false;
-    });
   }
 
   @override
@@ -57,30 +67,30 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
       appBar: AppBar(
         title: const Text('PDF Viewer'),
       ),
-      body: loading == true
+      body: loading
           ? const Center(
-              child: CircularProgressIndicator(),
-            )
+        child: CircularProgressIndicator(),
+      )
           : _localFilePath != null
-              ? PDFView(
-                  filePath: _localFilePath!,
-                  enableSwipe: true,
-                  swipeHorizontal: false,
-                  autoSpacing: false,
-                  pageSnap: true,
-                  pageFling: false,
-                  onError: (e) {
-                    print(e);
-                  },
-                )
-              : Center(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      await launch(widget.pdfUrl['pdfUrl']);
-                    },
-                    child: const Text('Open PDF in Browser'),
-                  ),
-                ),
+          ? PDFView(
+        filePath: _localFilePath!,
+        enableSwipe: true,
+        swipeHorizontal: false,
+        autoSpacing: false,
+        pageSnap: true,
+        pageFling: false,
+        onError: (e) {
+          log(e.toString());
+        },
+      )
+          : Center(
+        child: ElevatedButton(
+          onPressed: () async {
+            await launch(widget.pdfUrl['pdfUrl']);
+          },
+          child: const Text('Open PDF in Browser'),
+        ),
+      ),
     );
   }
 }

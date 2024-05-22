@@ -49,17 +49,17 @@ class _TeacherListState extends State<TeacherList> {
       _username = snapshot.docs
           .map(
               (doc) => User.fromJson(doc.data() as Map<String, dynamic>))
-          .first
-          .fullname;
+          .firstOrNull
+          ?.fullname;
       _userRole = snapshot.docs
           .map(
               (doc) => User.fromJson(doc.data() as Map<String, dynamic>))
-          .first
-          .role;
+          .firstOrNull
+          ?.role;
       _user=  snapshot.docs
           .map(
               (doc) => User.fromJson(doc.data() as Map<String, dynamic>))
-          .first;
+          .firstOrNull;
       loading = false;
     });
   }
