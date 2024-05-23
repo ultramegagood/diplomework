@@ -6,6 +6,9 @@ import 'package:diplome_aisha/screens/login.dart';
 import 'package:diplome_aisha/screens/pdf_view.dart';
 import 'package:diplome_aisha/screens/profile_screen.dart';
 import 'package:diplome_aisha/screens/register.dart';
+import 'package:diplome_aisha/screens/user_edit.dart';
+import 'package:diplome_aisha/screens/widgets/user_list.dart';
+import 'package:diplome_aisha/service_locator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -18,6 +21,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await serviceLocatorSetup();
+
   runApp(const MyApp());
 }
 
@@ -87,6 +92,16 @@ GoRouter routes = GoRouter(
     GoRoute(
       path: "/profile",
       builder: (context, state) => const ProfileEditPage(),
+    ),
+    GoRoute(
+      path: "/users",
+      builder: (context, state) => const UsersList(),
+    ),
+    GoRoute(
+      path: "/user-profile",
+      builder: (context, state) =>   UserEditScreen(
+        uid: state.extra as Map<String, dynamic>,
+      ),
     ),
   ],
 );

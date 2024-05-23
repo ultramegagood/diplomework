@@ -1,87 +1,51 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:diplome_aisha/action_store.dart';
 import 'package:diplome_aisha/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
+import 'package:xml/xml.dart';
+import 'package:xml/xml.dart';
+import 'package:xml/xml.dart';
+
+import '../../service_locator.dart';
 
 class TeacherList extends StatefulWidget {
-  List<Document> documents;
-  TeacherList({super.key, required this.documents});
+  TeacherList({
+    super.key,
+  });
 
   @override
   State<TeacherList> createState() => _TeacherListState();
 }
 
 class _TeacherListState extends State<TeacherList> {
-  final _firestore = FirebaseFirestore.instance;
-  String? _username;
-  User? _user;
-  String? _userId;
-  String? _userRole;
-  Uint8List? fileBytes;
-  List<Document> _documents = [];
-  List<Document> _documentsAdmin = [];
+  final localStore = serviceLocator<LocalStore>();
 
   bool loading = false;
 
-  void _fetchDocuments() async {
-    setState(() {
-      loading = true;
-    });
-    QuerySnapshot querySnapshot = await _firestore
-        .collection('documents')
-        .where('userId', isEqualTo: _userId)
-        .get();
-    QuerySnapshot querySnapshotAdmin =
-    await _firestore.collection('documents').get();
-    QuerySnapshot snapshot = await _firestore
-        .collection('users')
-        .where('id', isEqualTo: _userId)
-        .get();
-
-    setState(() {
-      _documents = querySnapshot.docs
-          .map((doc) => Document.fromJson(doc.data() as Map<String, dynamic>))
-          .toList();
-      _documentsAdmin = querySnapshotAdmin.docs
-          .map((doc) => Document.fromJson(doc.data() as Map<String, dynamic>))
-          .toList();
-      _username = snapshot.docs
-          .map(
-              (doc) => User.fromJson(doc.data() as Map<String, dynamic>))
-          .firstOrNull
-          ?.fullname;
-      _userRole = snapshot.docs
-          .map(
-              (doc) => User.fromJson(doc.data() as Map<String, dynamic>))
-          .firstOrNull
-          ?.role;
-      _user=  snapshot.docs
-          .map(
-              (doc) => User.fromJson(doc.data() as Map<String, dynamic>))
-          .firstOrNull;
-      loading = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return   widget.documents.isNotEmpty
-        ? ListView.builder(
-        itemCount: widget.documents.length,
-        itemBuilder: (context, index) {
-          Document doc = widget.documents[index];
-          return ListTile(
-              title: Text(doc.name!),
-              onTap: () async {
-                String? downloadUrl =
-                    doc.downloadUrl; // URL-адрес файла
-                context
-                    .push("/pdf", extra: {"pdfUrl": downloadUrl}).then((value) => _fetchDocuments());
-              });
-        })
+    return localStore.documents.isNotEmpty
+        ? Observer(
+          builder: (context) {
+            return ListView.builder(
+                itemCount: localStore.documents.length,
+                itemBuilder: (context, index) {
+                  Document doc = localStore.documents[index];
+                  return ListTile(
+                      title: Text(doc.name!),
+                      onTap: () async {
+                        String? downloadUrl = doc.downloadUrl; // URL-адрес файла
+                        context.push("/pdf", extra: {"pdfUrl": downloadUrl}).then(
+                            (value) => localStore.fetchDocuments());
+                      });
+                });
+          }
+        )
         : const Center(
-      child: Text("Добавьте файл"),
-    );
+            child: Text("Добавьте файл"),
+          );
   }
 }
