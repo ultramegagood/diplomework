@@ -10,6 +10,7 @@ import 'package:diplome_aisha/screens/user_edit.dart';
 import 'package:diplome_aisha/screens/widgets/user_list.dart';
 import 'package:diplome_aisha/service_locator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:go_router/go_router.dart';
@@ -21,6 +22,18 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FlutterError.onError = (errorDetails) {
+    if (errorDetails.context != null &&
+        !errorDetails.context!
+            .toDescription()
+            .contains('resolving an image codec')) {
+      try {
+        FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+      } on Exception catch (e) {
+        print(e);
+      }
+    }
+  };
   await serviceLocatorSetup();
 
   runApp(const MyApp());

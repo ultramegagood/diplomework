@@ -61,6 +61,7 @@ dependencies:
   open_file: ^3.3.2
   share:
   docx_template: ^0.3.6
+  firebase_crashlytics:
 
 
 dev_dependencies:
