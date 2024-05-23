@@ -12,65 +12,80 @@ import 'package:go_router/go_router.dart';
 import 'dart:io';
 import 'package:excel/excel.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share/share.dart';
 
+// Функция для экспорта данных в Excel
 Future<void> exportToExcel(
     List<models.User> users, List<Document> documents) async {
   var excel = Excel.createExcel();
 
-  // Создание листа для пользователей
-  Sheet userSheet = excel['Users'];
-  userSheet.appendRow(const [
-    const TextCellValue("ID"),
-    const TextCellValue('Full Name'),
-    const TextCellValue('Email'),
-    const TextCellValue('Password'),
-    const TextCellValue('Documents'),
-    const TextCellValue('Work Experience'),
-    const TextCellValue('Degree'),
-    const TextCellValue('Role'),
-    TextCellValue('Diplome)')
+  // Создание листа для пользователей и документов
+  Sheet combinedSheet = excel['Users and Documents'];
+  combinedSheet.appendRow(const [
+    TextCellValue("User ID"),
+    TextCellValue('Full Name'),
+    TextCellValue('Email'),
+    TextCellValue('Password'),
+    TextCellValue('Work Experience'),
+    TextCellValue('Degree'),
+    TextCellValue('Role'),
+    TextCellValue('Diplome'),
+    TextCellValue('Document ID'),
+    TextCellValue('Document Name'),
+    TextCellValue('Download URL'),
+    TextCellValue('Document Date'),
+    TextCellValue('Perechen'),
+    TextCellValue('Inter Works'),
+    TextCellValue('Inter Conf Works'),
+    TextCellValue('Name Book'),
+    TextCellValue('Authors')
   ]);
-  for (var user in users) {
-    userSheet.appendRow([
-      TextCellValue(user.id!),
-      TextCellValue(user.fullname!),
-      TextCellValue(user.email!),
-      TextCellValue(user.password!),
-      TextCellValue(user.documents!),
-      TextCellValue(user.workExperience!),
-      TextCellValue(user.degree!),
-      TextCellValue(user.role!),
-      TextCellValue(user.diplome!)
-    ]);
-  }
 
-  // Создание листа для документов
-  Sheet documentSheet = excel['Documents'];
-  documentSheet.appendRow([
-    const TextCellValue('ID'),
-    const TextCellValue('Name'),
-    const TextCellValue('User ID'),
-    const TextCellValue('Download URL'),
-    const TextCellValue('Date'),
-    const TextCellValue('Perechen'),
-    const TextCellValue('Inter Works'),
-    const TextCellValue('Inter Conf Works'),
-    const TextCellValue('Name Book'),
-    const TextCellValue('Authors')
-  ]);
-  for (var document in documents) {
-    documentSheet.appendRow([
-      TextCellValue(document.id!),
-      TextCellValue(document.name!),
-      TextCellValue(document.userId!),
-      TextCellValue(document.downloadUrl!),
-      TextCellValue(document.date!),
-      TextCellValue(document.perechen!),
-      TextCellValue(document.interWorks!),
-      TextCellValue(document.interConfWorks!),
-      TextCellValue(document.nameBook!),
-      TextCellValue(document.authors.toString())
-    ]);
+  for (var user in users) {
+    var userDocuments =
+        documents.where((doc) => doc.userId == user.id).toList();
+    if (userDocuments.isNotEmpty) {
+      for (var document in userDocuments) {
+        combinedSheet.appendRow([
+          TextCellValue(user.id!),
+          TextCellValue(user.fullname!),
+          TextCellValue(user.email!),
+          TextCellValue(user.password!),
+          TextCellValue(user.workExperience!),
+          TextCellValue(user.degree!),
+          TextCellValue(user.role!),
+          TextCellValue(user.diplome!),
+          TextCellValue(document.id!),
+          TextCellValue(document.name!),
+          TextCellValue(document.downloadUrl!),
+          TextCellValue(document.date!),
+          TextCellValue(document.perechen!),
+          TextCellValue(document.interWorks!),
+          TextCellValue(document.interConfWorks!),
+          TextCellValue(document.nameBook!),
+          TextCellValue(document.authors.toString())
+        ]);
+      }
+    } else {
+      combinedSheet.appendRow([
+        TextCellValue(user.id!),
+        TextCellValue(user.fullname!),
+        TextCellValue(user.email!),
+        TextCellValue(user.password!),
+        TextCellValue(user.workExperience!),
+        TextCellValue(user.degree!),
+        TextCellValue(user.role!),
+        TextCellValue(user.diplome!),
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]);
+    }
   }
 
   // Сохранение файла
@@ -81,6 +96,9 @@ Future<void> exportToExcel(
     ..writeAsBytesSync(excel.save()!);
 
   print('Excel file saved at $path');
+
+  // Предложить поделиться файлом
+  Share.shareFiles([path], text: 'Поделиться');
 }
 
 class UploadDocumentScreen extends StatefulWidget {
@@ -136,13 +154,13 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
           icon: const Icon(Icons.account_circle),
         ),
         actions: [
-          if(localStore.user?.role != "teacher")
-          IconButton(
-              onPressed: () {
-                exportToExcel([localStore.user!], localStore.documents);
-              },
-              icon: const Icon(Icons.import_export)),
-          if(localStore.user?.role != "teacher")
+          if (localStore.user?.role != "teacher")
+            IconButton(
+                onPressed: () {
+                  exportToExcel([localStore.user!], localStore.documents);
+                },
+                icon: const Icon(Icons.import_export)),
+          if (localStore.user?.role != "teacher")
             IconButton(
                 onPressed: () {
                   context.push("/users");

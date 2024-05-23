@@ -59,6 +59,9 @@ dependencies:
   flutter_mobx: ^2.2.1+1
   http: any
   open_file: ^3.3.2
+  share:
+  docx_template: ^0.3.6
+
 
 dev_dependencies:
   flutter_test:

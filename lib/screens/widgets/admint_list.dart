@@ -21,13 +21,13 @@ class _AdminListState extends State<AdminList> {
 
   @override
   Widget build(BuildContext context) {
-    if (localStore.documentsAdmin.isNotEmpty) {
+    if (localStore.documents.isNotEmpty) {
       return Observer(
         builder: (context) {
           return ListView.builder(
-                itemCount: localStore.documentsAdmin.length,
+                itemCount: localStore.documents.length,
                 itemBuilder: (context, index) {
-                  Document doc = localStore.documentsAdmin[index];
+                  Document doc = localStore.documents[index];
                   return Column(
                     children: [
                       Slidable(

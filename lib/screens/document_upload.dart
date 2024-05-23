@@ -153,6 +153,7 @@ class _DocumentUploadState extends State<DocumentUpload> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
         title: Text('Загрузить документ'),
       ),
       body: Padding(

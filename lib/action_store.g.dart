@@ -55,37 +55,6 @@ mixin _$LocalStore on _LocalStore, Store {
     });
   }
 
-  late final _$documentsAdminAtom =
-      Atom(name: '_LocalStore.documentsAdmin', context: context);
-
-  @override
-  List<model.Document> get documentsAdmin {
-    _$documentsAdminAtom.reportRead();
-    return super.documentsAdmin;
-  }
-
-  @override
-  set documentsAdmin(List<model.Document> value) {
-    _$documentsAdminAtom.reportWrite(value, super.documentsAdmin, () {
-      super.documentsAdmin = value;
-    });
-  }
-
-  late final _$valueAtom = Atom(name: '_LocalStore.value', context: context);
-
-  @override
-  int get value {
-    _$valueAtom.reportRead();
-    return super.value;
-  }
-
-  @override
-  set value(int value) {
-    _$valueAtom.reportWrite(value, super.value, () {
-      super.value = value;
-    });
-  }
-
   late final _$fetchUserAsyncAction =
       AsyncAction('_LocalStore.fetchUser', context: context);
 
@@ -102,28 +71,12 @@ mixin _$LocalStore on _LocalStore, Store {
     return _$fetchDocumentsAsyncAction.run(() => super.fetchDocuments());
   }
 
-  late final _$_LocalStoreActionController =
-      ActionController(name: '_LocalStore', context: context);
-
-  @override
-  void increment() {
-    final _$actionInfo = _$_LocalStoreActionController.startAction(
-        name: '_LocalStore.increment');
-    try {
-      return super.increment();
-    } finally {
-      _$_LocalStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
   @override
   String toString() {
     return '''
 user: ${user},
 documents: ${documents},
-users: ${users},
-documentsAdmin: ${documentsAdmin},
-value: ${value}
+users: ${users}
     ''';
   }
 }
