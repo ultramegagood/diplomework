@@ -44,7 +44,7 @@ class _AdminListState extends State<AdminList> {
                               backgroundColor: Colors.red,
                               foregroundColor: Colors.white,
                               icon: Icons.delete,
-                              label: 'Archive',
+                              label: 'Удалить',
                             ),
 
                           ],
