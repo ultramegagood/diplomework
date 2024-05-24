@@ -35,23 +35,23 @@ class _AuthScreenState extends State<AuthScreen> {
                 const SizedBox(
                   height: 32,
                 ),
-                Text("Выберите степень образования:",style: Theme.of(context).textTheme.titleMedium,),
+                Text(
+                  "Выберите степень образования:",
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
                 const SizedBox(
                   height: 16,
                 ),
                 ...degrees.map((e) => ListTile(
-                  trailing: _degree == e
-                      ? const Icon(Icons.done)
-                      : null,
-                  title: Text(e),
-                  onTap: () {
-                    setState(() {
-                      _degree = e;
-                    });
-                    Navigator.pop(context);
-
-                  },
-                ))
+                      trailing: _degree == e ? const Icon(Icons.done) : null,
+                      title: Text(e),
+                      onTap: () {
+                        setState(() {
+                          _degree = e;
+                        });
+                        Navigator.pop(context);
+                      },
+                    ))
               ],
             ),
           );
@@ -64,32 +64,35 @@ class _AuthScreenState extends State<AuthScreen> {
     'доктор философии (PhD)',
     'доктор по профилю'
   ];
+  final _formKey = GlobalKey<FormState>();
 
   void _register() async {
-    try {
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-        email: _email!,
-        password: _password!,
-      );
-      const role = model.Roles.teacher;
-      model.User user = model.User(
-        id: userCredential.user!.uid,
-        fullname: _fullname!,
-        email: _email!,
-        password: _password!,
-        documents: '',
-        role: role.name,
-        workExperience: _workExperience!,
-        degree: _degree!,
-        diplome: _diplome!,
-      );
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        UserCredential userCredential =
+            await _auth.createUserWithEmailAndPassword(
+          email: _email!,
+          password: _password!,
+        );
+        const role = model.Roles.teacher;
+        model.User user = model.User(
+          id: userCredential.user!.uid,
+          fullname: _fullname!,
+          email: _email!,
+          password: _password!,
+          documents: '',
+          role: role.name,
+          workExperience: _workExperience!,
+          degree: _degree!,
+          diplome: _diplome!,
+        );
 
-      await _firestore.collection('users').doc(user.id).set(user.toJson());
-      routes.push("/");
-    } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
+        await _firestore.collection('users').doc(user.id).set(user.toJson());
+        routes.push("/");
+      } catch (e) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+      }
     }
   }
 
@@ -102,77 +105,117 @@ class _AuthScreenState extends State<AuthScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.2,
-                child: Image.asset("assets/logo.png"),
-              ),
-              TextField(
-                onChanged: (value) => _fullname = value,
-                decoration: const InputDecoration(labelText: 'ФИО'),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextField(
-                onChanged: (value) => _email = value,
-                decoration: const InputDecoration(labelText: 'Почта'),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextField(
-                onChanged: (value) => _password = value,
-                decoration: const InputDecoration(labelText: 'Пароль'),
-                obscureText: true,
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextField(
-                onChanged: (value) => _workExperience = value,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Опыт работы'),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextField(
-                readOnly: true,
-                onTap: showDegrees,
-                onChanged: (value) => _degree = value,
-                controller: TextEditingController(text: _degree),
-                decoration: const InputDecoration(labelText: 'Академ. Степень'),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextField(
-                onChanged: (value) => _diplome = value,
-                decoration:
-                    const InputDecoration(labelText: 'Высшее образование'),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    onPressed: _register,
-                    child: const Text('Регистрация'),
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  ElevatedButton(
-                    onPressed: () => context.replace("/login"),
-                    child: const Text('Логин'),
-                  ),
-                ],
-              ),
-            ],
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.2,
+                  child: Image.asset("assets/logo.png"),
+                ),
+                TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Введите данные";
+                    }
+                    return null;
+                  },
+                  onChanged: (value) => _fullname = value,
+                  decoration: const InputDecoration(labelText: 'ФИО'),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Введите данные";
+                    }
+                    return null;
+                  },
+                  onChanged: (value) => _email = value,
+                  decoration: const InputDecoration(labelText: 'Почта'),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Введите данные";
+                    }
+                    return null;
+                  },
+                  onChanged: (value) => _password = value,
+                  decoration: const InputDecoration(labelText: 'Пароль'),
+                  obscureText: true,
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Введите данные";
+                    }
+                    return null;
+                  },
+                  onChanged: (value) => _workExperience = value,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: 'Опыт работы'),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Введите данные";
+                    }
+                    return null;
+                  },
+                  readOnly: true,
+                  onTap: showDegrees,
+                  onChanged: (value) => _degree = value,
+                  controller: TextEditingController(text: _degree),
+                  decoration:
+                      const InputDecoration(labelText: 'Академ. Степень'),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Введите данные";
+                    }
+                    return null;
+                  },
+                  onChanged: (value) => _diplome = value,
+                  decoration:
+                      const InputDecoration(labelText: 'Высшее образование'),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                      onPressed: _register,
+                      child: const Text('Регистрация'),
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    ElevatedButton(
+                      onPressed: () => context.replace("/login"),
+                      child: const Text('Логин'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

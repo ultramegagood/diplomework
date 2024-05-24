@@ -17,7 +17,8 @@ class _LoginPageState extends State<LoginPage> {
   String? _password;
 
   void _login() async {
-    try {
+    if(_formKey.currentState?.validate() ?? false) {
+      try {
       await _auth.signInWithEmailAndPassword(
         email: _email!,
         password: _password!,
@@ -27,7 +28,10 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));
     }
+    }
   }
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -39,44 +43,61 @@ class _LoginPageState extends State<LoginPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height*0.2,
-                child: Image.asset("assets/logo.png"),
-              ),
-              TextField(
-                onChanged: (value) => _email = value,
-                decoration: const InputDecoration(labelText: 'Email'),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextField(
-                onChanged: (value) => _password = value,
-                decoration: const InputDecoration(labelText: 'Password'),
-                obscureText: true,
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    onPressed: _login,
-                    child: const Text('Логин'),
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  ElevatedButton(
-                    onPressed: () => context.replace("/auth"),
-                    child: const Text('Регистрация'),
-                  ),
-                ],
-              ),
-            ],
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.2,
+                  child: Image.asset("assets/logo.png"),
+                ),
+                TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Введите данные";
+                    } else {
+                      return null;
+                    }
+                  },
+                  onChanged: (value) => _email = value,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Введите данные";
+                    } else {
+                      return null;
+                    }
+                  },
+                  onChanged: (value) => _password = value,
+                  decoration: const InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                      onPressed: _login,
+                      child: const Text('Логин'),
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    ElevatedButton(
+                      onPressed: () => context.replace("/auth"),
+                      child: const Text('Регистрация'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
