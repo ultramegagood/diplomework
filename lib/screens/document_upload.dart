@@ -23,7 +23,6 @@ class _DocumentUploadState extends State<DocumentUpload> {
 
   File? _document;
   String? _documentName;
-  String? _documentId;
   String? _dateYear;
   String? _filePath;
   String? _userId;
@@ -56,7 +55,7 @@ class _DocumentUploadState extends State<DocumentUpload> {
   Future<void> _uploadDocument() async {
     _userId = FirebaseAuth.instance.currentUser?.uid;
     try {
-      String fileName = '${_documentName}';
+      String fileName = '$_documentName';
       setState(() {
         loading = true;
       });
@@ -76,7 +75,7 @@ class _DocumentUploadState extends State<DocumentUpload> {
       String downloadUrl = await snapshot.ref.getDownloadURL();
 
       await _firestore.collection('documents').add({
-        'name': _controllerName.text!,
+        'name': _controllerName.text,
         'userId': _userId,
         'downloadUrl': downloadUrl,
         'date': _dateYear,
@@ -89,7 +88,7 @@ class _DocumentUploadState extends State<DocumentUpload> {
       });
       await _firestore.collection('documents').doc(docId).update({
         "id": docId,
-        'name': _controllerName.text!,
+        'name': _controllerName.text,
         'userId': _userId,
         'downloadUrl': downloadUrl,
         'date': _dateYear,
@@ -117,7 +116,7 @@ class _DocumentUploadState extends State<DocumentUpload> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Выберите год'),
-          content: Container(
+          content: SizedBox(
             // Устанавливаем высоту контейнера, чтобы ограничить количество показываемых лет
             height: 300,
             width: 100,
@@ -154,7 +153,7 @@ class _DocumentUploadState extends State<DocumentUpload> {
     return Scaffold(
       appBar: AppBar(
 
-        title: Text('Загрузить документ'),
+        title: const Text('Загрузить документ'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),

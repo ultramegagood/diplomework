@@ -1,18 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:diplome_aisha/action_store.dart';
 import 'package:diplome_aisha/models/models.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
-import 'package:xml/xml.dart';
-import 'package:xml/xml.dart';
-import 'package:xml/xml.dart';
 
 import '../../service_locator.dart';
 
 class TeacherList extends StatefulWidget {
-  TeacherList({
+  const TeacherList({
     super.key,
   });
 

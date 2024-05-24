@@ -8,8 +8,9 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 class AdminList extends StatefulWidget {
-
-  AdminList({super.key,  });
+  const AdminList({
+    super.key,
+  });
 
   @override
   State<AdminList> createState() => _AdminListState();
@@ -21,52 +22,50 @@ class _AdminListState extends State<AdminList> {
 
   @override
   Widget build(BuildContext context) {
-    if (localStore.documents.isNotEmpty) {
-      return Observer(
-        builder: (context) {
-          return ListView.builder(
-                itemCount: localStore.documents.length,
-                itemBuilder: (context, index) {
-                  Document doc = localStore.documents[index];
-                  return Column(
-                    children: [
-                      Slidable(
-                        endActionPane: ActionPane(
-                          motion: ScrollMotion(),
-                          children: [
-                            SlidableAction(
-                              // An action can be bigger than the others.
-                              flex: 2,
-                              onPressed: (context) {
-                                _firestore.collection("/documents").doc(doc.id).delete();
-                                localStore.fetchDocuments();
-                              },
-                              backgroundColor: Colors.red,
-                              foregroundColor: Colors.white,
-                              icon: Icons.delete,
-                              label: 'Удалить',
-                            ),
-
-                          ],
+    return Observer(builder: (context) {
+      if ((localStore.adminDocs ?? []).isNotEmpty) {
+        return ListView(children: [
+          ...localStore.adminDocs!.map((doc) => Column(
+                children: [
+                  Slidable(
+                    endActionPane: ActionPane(
+                      motion: const ScrollMotion(),
+                      children: [
+                        SlidableAction(
+                           flex: 2,
+                          onPressed: (context) {
+                            _firestore
+                                .collection("/documents")
+                                .doc(doc.id)
+                                .delete();
+                            localStore.fetchDocuments();
+                          },
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                          icon: Icons.delete,
+                          label: 'Удалить',
                         ),
-                        child: ListTile(
-                            title: Text(doc.name!),
-                            onTap: () async {
-                              String? downloadUrl =
-                                  doc.downloadUrl; // URL-адрес файла
-                              context.push("/pdf", extra: {"pdfUrl": downloadUrl});
-                            }),
-                      ),
-                      const Divider()
-                    ],
-                  );
-                });
-        }
-      );
-    } else {
-      return const Center(
-            child: Text("Добавьте файл"),
-          );
-    }
+                      ],
+                    ),
+                    child: ListTile(
+                        title: Text(doc.name!),
+                        onTap: () async {
+                          String? downloadUrl =
+                              doc.downloadUrl; // URL-адрес файла
+                          await context
+                              .push("/pdf", extra: {"pdfUrl": downloadUrl});
+                          setState(() {});
+                        }),
+                  ),
+                  const Divider()
+                ],
+              ))
+        ]);
+      } else {
+        return const Center(
+          child: Text("Добавьте файл"),
+        );
+      }
+    });
   }
 }

@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
         if(e.toString().contains("is incorrect")) {
           ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Неверный логин или пароль")));
+          .showSnackBar(const SnackBar(content: Text("Неверный логин или пароль")));
         }
     }
     }

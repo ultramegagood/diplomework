@@ -4,10 +4,9 @@ import 'package:diplome_aisha/models/models.dart' as models;
 import 'package:diplome_aisha/screens/widgets/admint_list.dart';
 import 'package:diplome_aisha/screens/widgets/teacher_list.dart';
 import 'package:diplome_aisha/service_locator.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:io';
 import 'package:excel/excel.dart';
@@ -131,7 +130,6 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    localStore.fetchDocuments();
   }
 
   bool loading = false;
@@ -141,19 +139,89 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
     super.didUpdateWidget(oldWidget);
   }
 
+  showSort() async {
+    List<String> selectedIds = [];
+    List<String> selectedYears = [];
+
+    await showModalBottomSheet(
+        context: context,
+        builder: (_) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 32,
+                  ),
+                  Text(
+                    "Сортировка:",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  ExpandablePanel(
+                      theme: const ExpandableThemeData(
+                        tapHeaderToExpand: true,
+                        tapBodyToCollapse: true,
+                        hasIcon: true,
+                      ),
+                      header: Text(
+                        "По пользователям",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      expanded: WrapUsers(
+                        onSelected: (v) {
+                          selectedIds = v;
+                        },
+                      ),
+                      collapsed: const SizedBox()),
+                  ExpandablePanel(
+                      theme: const ExpandableThemeData(
+                        tapHeaderToExpand: true,
+                        tapBodyToCollapse: true,
+                        hasIcon: true,
+                      ),
+                      header: Text(
+                        "По годам",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      expanded: WrapYear(
+                        onSelected: (v) {
+                          selectedYears = v;
+                        },
+                      ),
+                      collapsed: const SizedBox()),
+                  const SizedBox(
+                    height: 32,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                        onPressed: () {
+                          localStore.setSelectedUserIds([...selectedIds]);
+                          localStore.setSelectedYears([...selectedYears]);
+                        },
+                        child: const Text("Сохранить")),
+                  )
+                ],
+              ),
+            )).then((value) => setState(() {}));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(localStore.user?.fullname ?? ""),
-        leading: IconButton(
+        leading:loading?null: IconButton(
           onPressed: () {
             context.push("/profile");
           },
           icon: const Icon(Icons.account_circle),
         ),
-        actions: [
+        actions:loading?[]: [
           if (localStore.user?.role != "teacher")
             IconButton(
                 onPressed: () {
@@ -165,28 +233,156 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                 onPressed: () {
                   context.push("/users");
                 },
-                icon: const Icon(Icons.supervisor_account_rounded))
+                icon: const Icon(Icons.supervisor_account_rounded)),
+          if (localStore.user?.role != "teacher")
+            IconButton(
+                onPressed: showSort, icon: const Icon(Icons.import_export))
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.push("/document"),
         child: const Icon(Icons.add),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: loading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : Column(
-                children: [
-                  Expanded(
-                      child: localStore.user?.role == "teacher"
-                          ? TeacherList()
-                          : AdminList()),
-                ],
-              ),
-      ),
+      body: Observer(builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: loading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Column(
+                  children: [
+                    Expanded(
+                        child: localStore.user?.role == "teacher"
+                            ? const TeacherList()
+                            : const AdminList()),
+                  ],
+                ),
+        );
+      }),
+    );
+  }
+}
+
+class WrapUsers extends StatefulWidget {
+  final Function(List<String> ids) onSelected;
+
+  const WrapUsers({super.key, required this.onSelected});
+
+  @override
+  State<WrapUsers> createState() => _WrapUsersState();
+}
+
+class _WrapUsersState extends State<WrapUsers> {
+  final localStore = serviceLocator<LocalStore>();
+  List<String> selectedIds = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selectedIds = localStore.selectedUserIds;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.start,
+          runAlignment: WrapAlignment.start,
+          spacing: 4,
+          runSpacing: 4,
+          children: [
+            ...localStore.users.map((e) => GestureDetector(
+                  onTap: () async {
+                    setState(() {
+                      if (!selectedIds.contains(e.id)) {
+                        selectedIds.add(e.id!);
+                      } else {
+                        selectedIds.remove(e.id!);
+                      }
+                      widget.onSelected(selectedIds);
+                    });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: selectedIds.contains(e.id)
+                            ? Colors.greenAccent
+                            : Colors.white38,
+                        borderRadius: BorderRadius.circular(12)),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: Text(e.fullname.toString()),
+                  ),
+                ))
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class WrapYear extends StatefulWidget {
+  final Function(List<String> dates) onSelected;
+
+  const WrapYear({super.key, required this.onSelected});
+
+  @override
+  State<WrapYear> createState() => _WrapYearState();
+}
+
+class _WrapYearState extends State<WrapYear> {
+  final localStore = serviceLocator<LocalStore>();
+  List<String> selectedIds = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selectedIds = localStore.selectedYears;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.start,
+          runAlignment: WrapAlignment.start,
+          spacing: 4,
+          runSpacing: 4,
+          children: [
+            ...localStore.documents
+                .map((e) => e.date)
+                .toSet()
+                .map((e) => GestureDetector(
+                      onTap: () async {
+                        setState(() {
+                          if (!selectedIds.contains(e)) {
+                            selectedIds.add(e!);
+                          } else {
+                            selectedIds.remove(e);
+                          }
+                          widget.onSelected(selectedIds);
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: selectedIds.contains(e)
+                                ? Colors.greenAccent
+                                : Colors.white38,
+                            borderRadius: BorderRadius.circular(12)),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        child: Text(e.toString()),
+                      ),
+                    ))
+          ],
+        ),
+      ],
     );
   }
 }

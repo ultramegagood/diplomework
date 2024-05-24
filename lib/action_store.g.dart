@@ -9,6 +9,14 @@ part of 'action_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$LocalStore on _LocalStore, Store {
+  Computed<List<model.Document>?>? _$adminDocsComputed;
+
+  @override
+  List<model.Document>? get adminDocs => (_$adminDocsComputed ??=
+          Computed<List<model.Document>?>(() => super.adminDocs,
+              name: '_LocalStore.adminDocs'))
+      .value;
+
   late final _$userAtom = Atom(name: '_LocalStore.user', context: context);
 
   @override
@@ -40,6 +48,38 @@ mixin _$LocalStore on _LocalStore, Store {
     });
   }
 
+  late final _$selectedUserIdsAtom =
+      Atom(name: '_LocalStore.selectedUserIds', context: context);
+
+  @override
+  List<String> get selectedUserIds {
+    _$selectedUserIdsAtom.reportRead();
+    return super.selectedUserIds;
+  }
+
+  @override
+  set selectedUserIds(List<String> value) {
+    _$selectedUserIdsAtom.reportWrite(value, super.selectedUserIds, () {
+      super.selectedUserIds = value;
+    });
+  }
+
+  late final _$selectedYearsAtom =
+      Atom(name: '_LocalStore.selectedYears', context: context);
+
+  @override
+  List<String> get selectedYears {
+    _$selectedYearsAtom.reportRead();
+    return super.selectedYears;
+  }
+
+  @override
+  set selectedYears(List<String> value) {
+    _$selectedYearsAtom.reportWrite(value, super.selectedYears, () {
+      super.selectedYears = value;
+    });
+  }
+
   late final _$usersAtom = Atom(name: '_LocalStore.users', context: context);
 
   @override
@@ -52,6 +92,22 @@ mixin _$LocalStore on _LocalStore, Store {
   set users(List<model.User> value) {
     _$usersAtom.reportWrite(value, super.users, () {
       super.users = value;
+    });
+  }
+
+  late final _$sortedUserAtom =
+      Atom(name: '_LocalStore.sortedUser', context: context);
+
+  @override
+  List<model.User> get sortedUser {
+    _$sortedUserAtom.reportRead();
+    return super.sortedUser;
+  }
+
+  @override
+  set sortedUser(List<model.User> value) {
+    _$sortedUserAtom.reportWrite(value, super.sortedUser, () {
+      super.sortedUser = value;
     });
   }
 
@@ -71,12 +127,52 @@ mixin _$LocalStore on _LocalStore, Store {
     return _$fetchDocumentsAsyncAction.run(() => super.fetchDocuments());
   }
 
+  late final _$_LocalStoreActionController =
+      ActionController(name: '_LocalStore', context: context);
+
+  @override
+  void sortUsersById() {
+    final _$actionInfo = _$_LocalStoreActionController.startAction(
+        name: '_LocalStore.sortUsersById');
+    try {
+      return super.sortUsersById();
+    } finally {
+      _$_LocalStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSelectedUserIds(List<String> userIds) {
+    final _$actionInfo = _$_LocalStoreActionController.startAction(
+        name: '_LocalStore.setSelectedUserIds');
+    try {
+      return super.setSelectedUserIds(userIds);
+    } finally {
+      _$_LocalStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSelectedYears(List<String> years) {
+    final _$actionInfo = _$_LocalStoreActionController.startAction(
+        name: '_LocalStore.setSelectedYears');
+    try {
+      return super.setSelectedYears(years);
+    } finally {
+      _$_LocalStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
 user: ${user},
 documents: ${documents},
-users: ${users}
+selectedUserIds: ${selectedUserIds},
+selectedYears: ${selectedYears},
+users: ${users},
+sortedUser: ${sortedUser},
+adminDocs: ${adminDocs}
     ''';
   }
 }

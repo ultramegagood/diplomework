@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:diplome_aisha/action_store.dart';
 import 'package:diplome_aisha/models/models.dart';
 import 'package:diplome_aisha/service_locator.dart';
@@ -20,7 +19,7 @@ class _UsersListState extends State<UsersList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Пользователи"),
+        title: const Text("Пользователи"),
       ),
       body: Observer(
         builder: (context) {

@@ -62,7 +62,7 @@ dependencies:
   share:
   docx_template: ^0.3.6
   firebase_crashlytics:
-
+  expandable:
 
 dev_dependencies:
   flutter_test:
