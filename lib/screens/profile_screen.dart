@@ -58,7 +58,8 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
         builder: (c) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: ListView(
+            child:      ListView(     keyboardDismissBehavior:ScrollViewKeyboardDismissBehavior.onDrag ,
+
               children: [
                 const SizedBox(
                   height: 32,
@@ -141,7 +142,8 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
               padding: const EdgeInsets.all(16.0),
               child: Form(
                 key: _formKey,
-                child: ListView(
+                child:      ListView(     keyboardDismissBehavior:ScrollViewKeyboardDismissBehavior.onDrag ,
+
                   children: [
                     TextFormField(
                       controller: _controllerFullName,

@@ -30,7 +30,8 @@ class _AuthScreenState extends State<AuthScreen> {
         builder: (c) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: ListView(
+            child:      ListView(     keyboardDismissBehavior:ScrollViewKeyboardDismissBehavior.onDrag ,
+
               children: [
                 const SizedBox(
                   height: 32,
@@ -105,6 +106,8 @@ class _AuthScreenState extends State<AuthScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
+          keyboardDismissBehavior:ScrollViewKeyboardDismissBehavior.onDrag ,
+
           child: Form(
             key: _formKey,
             child: Column(

@@ -25,8 +25,10 @@ class _LoginPageState extends State<LoginPage> {
       );
       routes.push("/");
     } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
+        if(e.toString().contains("is incorrect")) {
+          ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Неверный логин или пароль")));
+        }
     }
     }
   }
@@ -43,6 +45,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
+          keyboardDismissBehavior:ScrollViewKeyboardDismissBehavior.onDrag ,
           child: Form(
             key: _formKey,
             child: Column(

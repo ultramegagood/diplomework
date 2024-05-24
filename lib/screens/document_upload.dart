@@ -161,7 +161,8 @@ class _DocumentUploadState extends State<DocumentUpload> {
         child: _filePath != null
             ? Form(
                 key: _formKey,
-                child: ListView(
+                child:      ListView(     keyboardDismissBehavior:ScrollViewKeyboardDismissBehavior.onDrag ,
+
                   children: [
                     TextFormField(
                       controller: _controllerName,
