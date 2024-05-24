@@ -13,7 +13,8 @@ class User {
   final String? fullname;
   final String? email;
   final String? password;
-  final String? documents;
+  @JsonKey(includeToJson: false,includeFromJson: false)
+  List<Document>? documents;
   final String? workExperience;
   final String? degree;
   final String? role;
@@ -24,7 +25,7 @@ class User {
       required this.fullname,
       required this.email,
       required this.password,
-      required this.documents,
+        this.documents,
       required this.workExperience,
       required this.degree,
       required this.role,

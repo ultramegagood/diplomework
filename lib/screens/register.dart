@@ -81,7 +81,7 @@ class _AuthScreenState extends State<AuthScreen> {
           fullname: _fullname!,
           email: _email!,
           password: _password!,
-          documents: '',
+          documents: [],
           role: role.name,
           workExperience: _workExperience!,
           degree: _degree!,

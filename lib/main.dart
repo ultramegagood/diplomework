@@ -6,6 +6,7 @@ import 'package:diplome_aisha/screens/login.dart';
 import 'package:diplome_aisha/screens/pdf_view.dart';
 import 'package:diplome_aisha/screens/profile_screen.dart';
 import 'package:diplome_aisha/screens/register.dart';
+import 'package:diplome_aisha/models/models.dart' as model;
 import 'package:diplome_aisha/screens/user_edit.dart';
 import 'package:diplome_aisha/screens/widgets/user_list.dart';
 import 'package:diplome_aisha/service_locator.dart';
@@ -14,6 +15,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pdf/pdf.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -112,9 +114,10 @@ GoRouter routes = GoRouter(
     ),
     GoRoute(
       path: "/user-profile",
-      builder: (context, state) =>   UserEditScreen(
+      builder: (context, state) => UserEditScreen(
         uid: state.extra as Map<String, dynamic>,
       ),
     ),
   ],
 );
+

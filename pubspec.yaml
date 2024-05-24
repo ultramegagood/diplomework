@@ -53,6 +53,7 @@ dependencies:
   json_serializable:
   flutter_slidable: ^3.1.0
   json_annotation:
+
   build_runner:
   excel: ^4.0.3
   mobx: ^2.3.3+2
@@ -63,6 +64,7 @@ dependencies:
   docx_template: ^0.3.6
   firebase_crashlytics:
   expandable:
+  pdf: ^3.6.5
 
 dev_dependencies:
   flutter_test:
@@ -106,10 +108,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Medium.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

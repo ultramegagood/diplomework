@@ -120,5 +120,8 @@ abstract class _LocalStore with Store {
     user = snapshot.docs
         .map((doc) => model.User.fromJson(doc.data() as Map<String, dynamic>))
         .firstOrNull;
+    for (var user in users) {
+      user.documents = documents.where((doc) => doc.userId == user.id).toList();
+    }
   }
 }
