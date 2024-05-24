@@ -159,7 +159,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                 onPressed: () {
                   exportToExcel([localStore.user!], localStore.documents);
                 },
-                icon: const Icon(Icons.import_export)),
+                icon: const Icon(Icons.ios_share)),
           if (localStore.user?.role != "teacher")
             IconButton(
                 onPressed: () {
