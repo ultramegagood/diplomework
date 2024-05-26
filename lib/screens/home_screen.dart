@@ -147,7 +147,6 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
     super.didUpdateWidget(oldWidget);
   }
 
-
   Future<void> exportDocument() async {
     final pdf = pw.Document();
 
@@ -158,111 +157,213 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
     // Логирование данных пользователей и документов
     print("Users length: ${users.length}");
     for (var user in users) {
-      print("User: ${user.fullname}, Documents: ${user.documents?.length ?? 0}");
+      print(
+          "User: ${user.fullname}, Documents: ${user.documents?.length ?? 0}");
     }
 
     pdf.addPage(
-      pw.Page(
+      pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
-          return pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Text(
-                'Приложение 10\nк квалификационным требованиям предъявляемым к образовательной деятельности и перечню документов, подтверждающих соответствие им',
-                style: pw.TextStyle(font: ttf, fontSize: 12),
-              ),
-              pw.SizedBox(height: 20),
-              pw.Text(
-                'Форма',
-                style: pw.TextStyle(font: ttf, fontSize: 12, fontWeight: pw.FontWeight.bold),
-              ),
-              pw.SizedBox(height: 10),
-              pw.Text(
-                'Сведения об осуществляющих научное руководство научных руководителях по направлению подготовки кадров с указанием стажа работы, научных публикаций и подготовленного учебника или учебного пособия',
-                style: pw.TextStyle(font: ttf, fontSize: 12),
-              ),
-              pw.SizedBox(height: 20),
-              pw.Table(
-                  border: pw.TableBorder.all(width: 1),
-                  children: [
-                    pw.TableRow(
-                        children: [
-                          pw.Container(
-                            padding:const pw.EdgeInsets.symmetric(horizontal: 2),child: pw.Text('№', style: pw.TextStyle(font: ttf, fontSize: 8, fontWeight: pw.FontWeight.bold)),
-                          ),
-                          pw.Container(
-                            padding:const pw.EdgeInsets.symmetric(horizontal: 2),child: pw.Text('ФИО', style: pw.TextStyle(font: ttf, fontSize: 8, fontWeight: pw.FontWeight.bold)),
-                          ),
-                          pw.Container(
-                            padding:const pw.EdgeInsets.symmetric(horizontal: 2),child: pw.Text('Образования', style: pw.TextStyle(font: ttf, fontSize: 8, fontWeight: pw.FontWeight.bold)),
-                          ),
-                          pw.Container(
-                            padding:const pw.EdgeInsets.symmetric(horizontal: 2),child: pw.Text('Стаж работы', style: pw.TextStyle(font: ttf, fontSize: 8, fontWeight: pw.FontWeight.bold)),
-                          ),
-                          pw.Container(
-                            padding:const pw.EdgeInsets.symmetric(horizontal: 2),child: pw.Text('Наличия ученой/академической степени', style: pw.TextStyle(font: ttf, fontSize: 8, fontWeight: pw.FontWeight.bold)),
-                          ),
-                          pw.Container(
-                            padding:const pw.EdgeInsets.symmetric(horizontal: 2),child: pw.Text('Перечне научных изданий', style: pw.TextStyle(font: ttf, fontSize: 8, fontWeight: pw.FontWeight.bold)),
-                          ),
-                          pw.Container(
-                            padding:const pw.EdgeInsets.symmetric(horizontal: 2),child: pw.Text('Сведения о научных публикациях', style: pw.TextStyle(font: ttf, fontSize: 8, fontWeight: pw.FontWeight.bold)),
-                          ),
-                          pw.Container(
-                            padding:const pw.EdgeInsets.symmetric(horizontal: 2),child: pw.Text('В трудах международных конференций', style: pw.TextStyle(font: ttf, fontSize: 8, fontWeight: pw.FontWeight.bold)),
-                          ),
-                          pw.Container(
-                            padding:const pw.EdgeInsets.symmetric(horizontal: 2),child: pw.Text('Название учебника', style: pw.TextStyle(font: ttf, fontSize: 8, fontWeight: pw.FontWeight.bold)),
-                          ),
-                        ]
+      return    <pw.Widget>[
+            pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(
+                  'Приложение 10\nк квалификационным требованиям предъявляемым к образовательной деятельности и перечню документов, подтверждающих соответствие им',
+                  style: pw.TextStyle(font: ttf, fontSize: 12),
+                ),
+                pw.SizedBox(height: 20),
+                pw.Text(
+                  'Форма',
+                  style: pw.TextStyle(
+                      font: ttf, fontSize: 12, fontWeight: pw.FontWeight.bold),
+                ),
+                pw.SizedBox(height: 10),
+                pw.Text(
+                  'Сведения об осуществляющих научное руководство научных руководителях по направлению подготовки кадров с указанием стажа работы, научных публикаций и подготовленного учебника или учебного пособия',
+                  style: pw.TextStyle(font: ttf, fontSize: 12),
+                ),
+                pw.SizedBox(height: 20),
+              ],
+            ),
+            pw.Table(
+                tableWidth: pw.TableWidth.max,
+                border: pw.TableBorder.all(width: 1),
+                children: [
+                  pw.TableRow(children: [
+                    pw.Container(
+                      padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                      child: pw.Text('№',
+                          style: pw.TextStyle(
+                              font: ttf,
+                              fontSize: 8,
+                              fontWeight: pw.FontWeight.bold)),
                     ),
-                    for (var userIndex = 0; userIndex < users.length; userIndex++)
-                      if (users[userIndex].documents != null && users[userIndex].documents!.isNotEmpty)
-                        ...[
-                          for (var docIndex = 0; docIndex < users[userIndex].documents!.length; docIndex++)
-                            pw.TableRow(
-                              children: [
-                                pw.Container(
-                                  padding:const pw.EdgeInsets.symmetric(horizontal: 2),child: pw.Text(docIndex == 0 ?'${userIndex + 1}':"", style: pw.TextStyle(font: ttf, fontSize: 8)),
-                                ),
-                                pw.Container(
-
-                                  padding:const pw.EdgeInsets.symmetric(horizontal: 2),child: pw.Text(docIndex == 0 ? users[userIndex].fullname! : '', style: pw.TextStyle(font: ttf, fontSize: 8)),
-                                ),
-                                pw.Container(
-                                  padding:const pw.EdgeInsets.symmetric(horizontal: 2),child: pw.Text(docIndex == 0 ? users[userIndex].diplome! : '', style: pw.TextStyle(font: ttf, fontSize: 8)),
-                                ),
-                                pw.Container(
-                                  padding:const pw.EdgeInsets.symmetric(horizontal: 2),child: pw.Text(docIndex == 0 ? users[userIndex].workExperience! : '', style: pw.TextStyle(font: ttf, fontSize: 8)),
-                                ),
-                                pw.Container(
-                                  padding:const pw.EdgeInsets.symmetric(horizontal: 2),child: pw.Text(docIndex == 0 ? users[userIndex].degree! : '', style: pw.TextStyle(font: ttf, fontSize: 8)),
-                                ),
-                                pw.Container(
-                                  padding:const pw.EdgeInsets.symmetric(horizontal: 2),child: pw.Text(users[userIndex].documents![docIndex].perechen ?? '', style: pw.TextStyle(font: ttf, fontSize: 8)),
-                                ),
-                                pw.Container(
-                                  padding:const pw.EdgeInsets.symmetric(horizontal: 2),child: pw.Text(users[userIndex].documents![docIndex].interWorks ?? '', style: pw.TextStyle(font: ttf, fontSize: 8)),
-                                ),
-                                pw.Container(
-                                  padding:const pw.EdgeInsets.symmetric(horizontal: 2),child: pw.Text(users[userIndex].documents![docIndex].interConfWorks ?? '', style: pw.TextStyle(font: ttf, fontSize: 8)),
-                                ),
-                                pw.Container(
-                                  padding:const pw.EdgeInsets.symmetric(horizontal: 2),child: pw.Text(users[userIndex].documents![docIndex].nameBook ?? '', style: pw.TextStyle(font: ttf, fontSize: 8)),
-                                ),
-                              ],
-                            )
-                        ]
-                  ]
-              ),
-              pw.SizedBox(height: 20),
-              pw.Text(
-                'Данные о публикациях только за последние 5 лет! Необходимы полные выходные данные публикаций, оформленные по требованиям.',
-                style: pw.TextStyle(font: ttf, fontSize: 12),
-              ),
-            ],
-          );
+                    pw.Container(
+                      padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                      child: pw.Text('ФИО',
+                          style: pw.TextStyle(
+                              font: ttf,
+                              fontSize: 8,
+                              fontWeight: pw.FontWeight.bold)),
+                    ),
+                    pw.Container(
+                      padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                      child: pw.Text('Образования',
+                          style: pw.TextStyle(
+                              font: ttf,
+                              fontSize: 8,
+                              fontWeight: pw.FontWeight.bold)),
+                    ),
+                    pw.Container(
+                      padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                      child: pw.Text('Стаж работы',
+                          style: pw.TextStyle(
+                              font: ttf,
+                              fontSize: 8,
+                              fontWeight: pw.FontWeight.bold)),
+                    ),
+                    pw.Container(
+                      padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                      child: pw.Text('Наличия ученой/академической степени',
+                          style: pw.TextStyle(
+                              font: ttf,
+                              fontSize: 8,
+                              fontWeight: pw.FontWeight.bold)),
+                    ),
+                    pw.Container(
+                      padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                      child: pw.Text('Перечне научных изданий',
+                          style: pw.TextStyle(
+                              font: ttf,
+                              fontSize: 8,
+                              fontWeight: pw.FontWeight.bold)),
+                    ),
+                    pw.Container(
+                      padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                      child: pw.Text('Сведения о научных публикациях',
+                          style: pw.TextStyle(
+                              font: ttf,
+                              fontSize: 8,
+                              fontWeight: pw.FontWeight.bold)),
+                    ),
+                    pw.Container(
+                      padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                      child: pw.Text('В трудах международных конференций',
+                          style: pw.TextStyle(
+                              font: ttf,
+                              fontSize: 8,
+                              fontWeight: pw.FontWeight.bold)),
+                    ),
+                    pw.Container(
+                      padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                      child: pw.Text('Название учебника',
+                          style: pw.TextStyle(
+                              font: ttf,
+                              fontSize: 8,
+                              fontWeight: pw.FontWeight.bold)),
+                    ),
+                  ]),
+                  for (var userIndex = 0; userIndex < users.length; userIndex++)
+                    if (users[userIndex].documents != null &&
+                        users[userIndex].documents!.isNotEmpty) ...[
+                      for (var docIndex = 0;
+                          docIndex < users[userIndex].documents!.length;
+                          docIndex++)
+                        pw.TableRow(
+                          children: [
+                            pw.Container(
+                              padding:
+                                  const pw.EdgeInsets.symmetric(horizontal: 2),
+                              child: pw.Text(
+                                  docIndex == 0 ? '${userIndex + 1}' : "",
+                                  style: pw.TextStyle(font: ttf, fontSize: 8)),
+                            ),
+                            pw.Container(
+                              padding:
+                                  const pw.EdgeInsets.symmetric(horizontal: 2),
+                              child: pw.Text(
+                                  docIndex == 0
+                                      ? users[userIndex].fullname!
+                                      : '',
+                                  style: pw.TextStyle(font: ttf, fontSize: 8)),
+                            ),
+                            pw.Container(
+                              padding:
+                                  const pw.EdgeInsets.symmetric(horizontal: 2),
+                              child: pw.Text(
+                                  docIndex == 0
+                                      ? users[userIndex].diplome!
+                                      : '',
+                                  style: pw.TextStyle(font: ttf, fontSize: 8)),
+                            ),
+                            pw.Container(
+                              padding:
+                                  const pw.EdgeInsets.symmetric(horizontal: 2),
+                              child: pw.Text(
+                                  docIndex == 0
+                                      ? users[userIndex].workExperience!
+                                      : '',
+                                  style: pw.TextStyle(font: ttf, fontSize: 8)),
+                            ),
+                            pw.Container(
+                              padding:
+                                  const pw.EdgeInsets.symmetric(horizontal: 2),
+                              child: pw.Text(
+                                  docIndex == 0 ? users[userIndex].degree! : '',
+                                  style: pw.TextStyle(font: ttf, fontSize: 8)),
+                            ),
+                            pw.Container(
+                              padding:
+                                  const pw.EdgeInsets.symmetric(horizontal: 2),
+                              child: pw.Text(
+                                  users[userIndex]
+                                          .documents![docIndex]
+                                          .perechen ??
+                                      '',
+                                  style: pw.TextStyle(font: ttf, fontSize: 8)),
+                            ),
+                            pw.Container(
+                              padding:
+                                  const pw.EdgeInsets.symmetric(horizontal: 2),
+                              child: pw.Text(
+                                  users[userIndex]
+                                          .documents![docIndex]
+                                          .interWorks ??
+                                      '',
+                                  style: pw.TextStyle(font: ttf, fontSize: 8)),
+                            ),
+                            pw.Container(
+                              padding:
+                                  const pw.EdgeInsets.symmetric(horizontal: 2),
+                              child: pw.Text(
+                                  users[userIndex]
+                                          .documents![docIndex]
+                                          .interConfWorks ??
+                                      '',
+                                  style: pw.TextStyle(font: ttf, fontSize: 8)),
+                            ),
+                            pw.Container(
+                              padding:
+                                  const pw.EdgeInsets.symmetric(horizontal: 2),
+                              child: pw.Text(
+                                  users[userIndex]
+                                          .documents![docIndex]
+                                          .nameBook ??
+                                      '',
+                                  style: pw.TextStyle(font: ttf, fontSize: 8)),
+                            ),
+                          ],
+                        )
+                    ]
+                ]),
+            pw.SizedBox(height: 20),
+            pw.Text(
+              'Данные о публикациях только за последние 5 лет! Необходимы полные выходные данные публикаций, оформленные по требованиям.',
+              style: pw.TextStyle(font: ttf, fontSize: 12),
+            ),
+          ];
         },
       ),
     );
