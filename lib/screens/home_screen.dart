@@ -22,8 +22,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 // Функция для экспорта данных в Excel
-Future<void> exportToExcel(
-    List<models.User> users, List<Document> documents) async {
+Future<void> exportToExcel(List<models.User> users,
+    List<Document> documents) async {
   var excel = Excel.createExcel();
 
   // Создание листа для пользователей и документов
@@ -50,7 +50,7 @@ Future<void> exportToExcel(
 
   for (var user in users) {
     var userDocuments =
-        documents.where((doc) => doc.userId == user.id).toList();
+    documents.where((doc) => doc.userId == user.id).toList();
     if (userDocuments.isNotEmpty) {
       for (var document in userDocuments) {
         combinedSheet.appendRow([
@@ -165,7 +165,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
-      return    <pw.Widget>[
+          return <pw.Widget>[
             pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
@@ -187,177 +187,157 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                 pw.SizedBox(height: 20),
               ],
             ),
-            pw.Table(
-                tableWidth: pw.TableWidth.max,
-                border: pw.TableBorder.all(width: 1),
-                children: [
-                  pw.TableRow(children: [
-                    pw.Container(
-                      padding: const pw.EdgeInsets.symmetric(horizontal: 2),
-                      child: pw.Text('№',
-                          style: pw.TextStyle(
-                              font: ttf,
-                              fontSize: 8,
-                              fontWeight: pw.FontWeight.bold)),
-                    ),
-                    pw.Container(
-                      padding: const pw.EdgeInsets.symmetric(horizontal: 2),
-                      child: pw.Text('ФИО',
-                          style: pw.TextStyle(
-                              font: ttf,
-                              fontSize: 8,
-                              fontWeight: pw.FontWeight.bold)),
-                    ),
-                    pw.Container(
-                      padding: const pw.EdgeInsets.symmetric(horizontal: 2),
-                      child: pw.Text('Образования',
-                          style: pw.TextStyle(
-                              font: ttf,
-                              fontSize: 8,
-                              fontWeight: pw.FontWeight.bold)),
-                    ),
-                    pw.Container(
-                      padding: const pw.EdgeInsets.symmetric(horizontal: 2),
-                      child: pw.Text('Стаж работы',
-                          style: pw.TextStyle(
-                              font: ttf,
-                              fontSize: 8,
-                              fontWeight: pw.FontWeight.bold)),
-                    ),
-                    pw.Container(
-                      padding: const pw.EdgeInsets.symmetric(horizontal: 2),
-                      child: pw.Text('Наличия ученой/академической степени',
-                          style: pw.TextStyle(
-                              font: ttf,
-                              fontSize: 8,
-                              fontWeight: pw.FontWeight.bold)),
-                    ),
-                    pw.Container(
-                      padding: const pw.EdgeInsets.symmetric(horizontal: 2),
-                      child: pw.Text('Перечне научных изданий',
-                          style: pw.TextStyle(
-                              font: ttf,
-                              fontSize: 8,
-                              fontWeight: pw.FontWeight.bold)),
-                    ),
-                    pw.Container(
-                      padding: const pw.EdgeInsets.symmetric(horizontal: 2),
-                      child: pw.Text('Сведения о научных публикациях',
-                          style: pw.TextStyle(
-                              font: ttf,
-                              fontSize: 8,
-                              fontWeight: pw.FontWeight.bold)),
-                    ),
-                    pw.Container(
-                      padding: const pw.EdgeInsets.symmetric(horizontal: 2),
-                      child: pw.Text('В трудах международных конференций',
-                          style: pw.TextStyle(
-                              font: ttf,
-                              fontSize: 8,
-                              fontWeight: pw.FontWeight.bold)),
-                    ),
-                    pw.Container(
-                      padding: const pw.EdgeInsets.symmetric(horizontal: 2),
-                      child: pw.Text('Название учебника',
-                          style: pw.TextStyle(
-                              font: ttf,
-                              fontSize: 8,
-                              fontWeight: pw.FontWeight.bold)),
-                    ),
-                  ]),
-                  for (var userIndex = 0; userIndex < users.length; userIndex++)
-                    if (users[userIndex].documents != null &&
-                        users[userIndex].documents!.isNotEmpty) ...[
-                      for (var docIndex = 0;
-                          docIndex < users[userIndex].documents!.length;
-                          docIndex++)
-                        pw.TableRow(
-                          children: [
-                            pw.Container(
-                              padding:
-                                  const pw.EdgeInsets.symmetric(horizontal: 2),
-                              child: pw.Text(
-                                  docIndex == 0 ? '${userIndex + 1}' : "",
-                                  style: pw.TextStyle(font: ttf, fontSize: 8)),
-                            ),
-                            pw.Container(
-                              padding:
-                                  const pw.EdgeInsets.symmetric(horizontal: 2),
-                              child: pw.Text(
-                                  docIndex == 0
-                                      ? users[userIndex].fullname!
-                                      : '',
-                                  style: pw.TextStyle(font: ttf, fontSize: 8)),
-                            ),
-                            pw.Container(
-                              padding:
-                                  const pw.EdgeInsets.symmetric(horizontal: 2),
-                              child: pw.Text(
-                                  docIndex == 0
-                                      ? users[userIndex].diplome!
-                                      : '',
-                                  style: pw.TextStyle(font: ttf, fontSize: 8)),
-                            ),
-                            pw.Container(
-                              padding:
-                                  const pw.EdgeInsets.symmetric(horizontal: 2),
-                              child: pw.Text(
-                                  docIndex == 0
-                                      ? users[userIndex].workExperience!
-                                      : '',
-                                  style: pw.TextStyle(font: ttf, fontSize: 8)),
-                            ),
-                            pw.Container(
-                              padding:
-                                  const pw.EdgeInsets.symmetric(horizontal: 2),
-                              child: pw.Text(
-                                  docIndex == 0 ? users[userIndex].degree! : '',
-                                  style: pw.TextStyle(font: ttf, fontSize: 8)),
-                            ),
-                            pw.Container(
-                              padding:
-                                  const pw.EdgeInsets.symmetric(horizontal: 2),
-                              child: pw.Text(
-                                  users[userIndex]
-                                          .documents![docIndex]
-                                          .perechen ??
-                                      '',
-                                  style: pw.TextStyle(font: ttf, fontSize: 8)),
-                            ),
-                            pw.Container(
-                              padding:
-                                  const pw.EdgeInsets.symmetric(horizontal: 2),
-                              child: pw.Text(
-                                  users[userIndex]
-                                          .documents![docIndex]
-                                          .interWorks ??
-                                      '',
-                                  style: pw.TextStyle(font: ttf, fontSize: 8)),
-                            ),
-                            pw.Container(
-                              padding:
-                                  const pw.EdgeInsets.symmetric(horizontal: 2),
-                              child: pw.Text(
-                                  users[userIndex]
-                                          .documents![docIndex]
-                                          .interConfWorks ??
-                                      '',
-                                  style: pw.TextStyle(font: ttf, fontSize: 8)),
-                            ),
-                            pw.Container(
-                              padding:
-                                  const pw.EdgeInsets.symmetric(horizontal: 2),
-                              child: pw.Text(
-                                  users[userIndex]
-                                          .documents![docIndex]
-                                          .nameBook ??
-                                      '',
-                                  style: pw.TextStyle(font: ttf, fontSize: 8)),
-                            ),
-                          ],
-                        )
-                    ]
-                ]),
+            pw.Table(border: pw.TableBorder.all(width: 1), children: [
+              pw.TableRow(children: [
+                pw.Container(
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                  child: pw.Text('№',
+                      style: pw.TextStyle(
+                          font: ttf,
+                          fontSize: 8,
+                          fontWeight: pw.FontWeight.bold)),
+                ),
+                pw.Container(
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                  child: pw.Text('ФИО',
+                      style: pw.TextStyle(
+                          font: ttf,
+                          fontSize: 8,
+                          fontWeight: pw.FontWeight.bold)),
+                ),
+                pw.Container(
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                  child: pw.Text('Образования',
+                      style: pw.TextStyle(
+                          font: ttf,
+                          fontSize: 8,
+                          fontWeight: pw.FontWeight.bold)),
+                ),
+                pw.Container(
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                  child: pw.Text('Стаж работы',
+                      style: pw.TextStyle(
+                          font: ttf,
+                          fontSize: 8,
+                          fontWeight: pw.FontWeight.bold)),
+                ),
+                pw.Container(
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                  child: pw.Text('Наличия ученой/академической степени',
+                      style: pw.TextStyle(
+                          font: ttf,
+                          fontSize: 8,
+                          fontWeight: pw.FontWeight.bold)),
+                ),
+                pw.Container(
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                  child: pw.Text('Перечне научных изданий',
+                      style: pw.TextStyle(
+                          font: ttf,
+                          fontSize: 8,
+                          fontWeight: pw.FontWeight.bold)),
+                ),
+                pw.Container(
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                  child: pw.Text('Сведения о научных публикациях',
+                      style: pw.TextStyle(
+                          font: ttf,
+                          fontSize: 8,
+                          fontWeight: pw.FontWeight.bold)),
+                ),
+                pw.Container(
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                  child: pw.Text('В трудах международных конференций',
+                      style: pw.TextStyle(
+                          font: ttf,
+                          fontSize: 8,
+                          fontWeight: pw.FontWeight.bold)),
+                ),
+                pw.Container(
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                  child: pw.Text('Название учебника',
+                      style: pw.TextStyle(
+                          font: ttf,
+                          fontSize: 8,
+                          fontWeight: pw.FontWeight.bold)),
+                ),
+              ]),
+              for (var userIndex = 0; userIndex < users.length; userIndex++)
+                if (users[userIndex].documents != null &&
+                    users[userIndex].documents!.isNotEmpty) ...[
+                  for (var docIndex = 0;
+                  docIndex < users[userIndex].documents!.length;
+                  docIndex++)
+                    pw.TableRow(
+                      children: [
+                        pw.Container(
+                          padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                          child: pw.Text(
+                              docIndex == 0 ? '${userIndex + 1}' : "",
+                              style: pw.TextStyle(font: ttf, fontSize: 8)),
+                        ),
+                        pw.Container(
+                          padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                          child: pw.Text(
+                              docIndex == 0 ? users[userIndex].fullname! : '',
+                              style: pw.TextStyle(font: ttf, fontSize: 8)),
+                        ),
+                        pw.Container(
+                          padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                          child: pw.Text(
+                              docIndex == 0 ? users[userIndex].diplome! : '',
+                              style: pw.TextStyle(font: ttf, fontSize: 8)),
+                        ),
+                        pw.Container(
+                          padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                          child: pw.Text(
+                              docIndex == 0
+                                  ? users[userIndex].workExperience!
+                                  : '',
+                              style: pw.TextStyle(font: ttf, fontSize: 8)),
+                        ),
+                        pw.Container(
+                          padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                          child: pw.Text(
+                              docIndex == 0 ? users[userIndex].degree! : '',
+                              style: pw.TextStyle(font: ttf, fontSize: 8)),
+                        ),
+                        pw.Container(
+                          padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                          child: pw.Text(
+                              users[userIndex].documents![docIndex].perechen ??
+                                  '',
+                              style: pw.TextStyle(font: ttf, fontSize: 8)),
+                        ),
+                        pw.Container(
+                          padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                          child: pw.Text(
+                              users[userIndex]
+                                  .documents![docIndex]
+                                  .interWorks ??
+                                  '',
+                              style: pw.TextStyle(font: ttf, fontSize: 8)),
+                        ),
+                        pw.Container(
+                          padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                          child: pw.Text(
+                              users[userIndex]
+                                  .documents![docIndex]
+                                  .interConfWorks ??
+                                  '',
+                              style: pw.TextStyle(font: ttf, fontSize: 8)),
+                        ),
+                        pw.Container(
+                          padding: const pw.EdgeInsets.symmetric(horizontal: 2),
+                          child: pw.Text(
+                              users[userIndex].documents![docIndex].nameBook ??
+                                  '',
+                              style: pw.TextStyle(font: ttf, fontSize: 8)),
+                        ),
+                      ],
+                    )
+                ]
+            ]),
             pw.SizedBox(height: 20),
             pw.Text(
               'Данные о публикациях только за последние 5 лет! Необходимы полные выходные данные публикаций, оформленные по требованиям.',
@@ -383,7 +363,8 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
 
     await showModalBottomSheet(
         context: context,
-        builder: (_) => Padding(
+        builder: (_) =>
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -393,7 +374,10 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                   ),
                   Text(
                     "Сортировка:",
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleLarge,
                   ),
                   const SizedBox(
                     height: 16,
@@ -406,7 +390,10 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                       ),
                       header: Text(
                         "По пользователям",
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .titleMedium,
                       ),
                       expanded: WrapUsers(
                         onSelected: (v) {
@@ -422,7 +409,10 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                       ),
                       header: Text(
                         "По годам",
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .titleMedium,
                       ),
                       expanded: WrapYear(
                         onSelected: (v) {
@@ -456,32 +446,35 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
         leading: loading
             ? null
             : IconButton(
-                onPressed: () {
-                  context.push("/profile");
-                },
-                icon: const Icon(Icons.account_circle),
-              ),
+          onPressed: () {
+            context.push("/profile");
+          },
+          icon: const Icon(Icons.account_circle),
+        ),
         actions: loading
             ? []
             : [
-                if (localStore.user?.role != "teacher")
-                  IconButton(
-                      onPressed: exportDocument,
-                      icon: const Icon(Icons.ios_share)),
-                if (localStore.user?.role != "teacher")
-                  IconButton(
-                      onPressed: () {
-                        context.push("/users");
-                      },
-                      icon: const Icon(Icons.supervisor_account_rounded)),
-                if (localStore.user?.role != "teacher")
-                  IconButton(
-                      onPressed: showSort,
-                      icon: const Icon(Icons.import_export))
-              ],
+          if (localStore.user?.role != "teacher")
+            IconButton(
+                onPressed: exportDocument,
+                icon: const Icon(Icons.ios_share)),
+          if (localStore.user?.role != "teacher")
+            IconButton(
+                onPressed: () {
+                  context.push("/users");
+                },
+                icon: const Icon(Icons.supervisor_account_rounded)),
+          if (localStore.user?.role != "teacher")
+            IconButton(
+                onPressed: showSort,
+                icon: const Icon(Icons.import_export))
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push("/document"),
+        onPressed: () =>
+            context.push("/document").then((value) =>
+                localStore.fetchDocuments()
+            ),
         child: const Icon(Icons.add),
       ),
       body: Observer(builder: (context) {
@@ -489,16 +482,16 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
           padding: const EdgeInsets.all(16.0),
           child: loading
               ? const Center(
-                  child: CircularProgressIndicator(),
-                )
+            child: CircularProgressIndicator(),
+          )
               : Column(
-                  children: [
-                    Expanded(
-                        child: localStore.user?.role == "teacher"
-                            ? const TeacherList()
-                            : const AdminList()),
-                  ],
-                ),
+            children: [
+              Expanded(
+                  child: localStore.user?.role == "teacher"
+                      ? const TeacherList()
+                      : const AdminList()),
+            ],
+          ),
         );
       }),
     );
@@ -536,7 +529,8 @@ class _WrapUsersState extends State<WrapUsers> {
           spacing: 4,
           runSpacing: 4,
           children: [
-            ...localStore.users.map((e) => GestureDetector(
+            ...localStore.users.map((e) =>
+                GestureDetector(
                   onTap: () async {
                     setState(() {
                       if (!selectedIds.contains(e.id)) {
@@ -554,7 +548,7 @@ class _WrapUsersState extends State<WrapUsers> {
                             : Colors.white38,
                         borderRadius: BorderRadius.circular(12)),
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     child: Text(e.fullname.toString()),
                   ),
                 ))
@@ -599,28 +593,29 @@ class _WrapYearState extends State<WrapYear> {
             ...localStore.documents
                 .map((e) => e.date)
                 .toSet()
-                .map((e) => GestureDetector(
-                      onTap: () async {
-                        setState(() {
-                          if (!selectedIds.contains(e)) {
-                            selectedIds.add(e!);
-                          } else {
-                            selectedIds.remove(e);
-                          }
-                          widget.onSelected(selectedIds);
-                        });
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: selectedIds.contains(e)
-                                ? Colors.greenAccent
-                                : Colors.white38,
-                            borderRadius: BorderRadius.circular(12)),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
-                        child: Text(e.toString()),
-                      ),
-                    ))
+                .map((e) =>
+                GestureDetector(
+                  onTap: () async {
+                    setState(() {
+                      if (!selectedIds.contains(e)) {
+                        selectedIds.add(e!);
+                      } else {
+                        selectedIds.remove(e);
+                      }
+                      widget.onSelected(selectedIds);
+                    });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: selectedIds.contains(e)
+                            ? Colors.greenAccent
+                            : Colors.white38,
+                        borderRadius: BorderRadius.circular(12)),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 4),
+                    child: Text(e.toString()),
+                  ),
+                ))
           ],
         ),
       ],
